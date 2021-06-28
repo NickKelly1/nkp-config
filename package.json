@@ -1,20 +1,19 @@
 {
   "main": "dist/index.js",
   "name": "@nkp/config",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "Tools to bootstrap a configuration objects in JavaScript",
   "author": "Nick Kelly",
+  "readme": "https://github.com/NickKelly1/nkp-config/blob/master/README.md",
   "private": false,
   "repository": {
     "url": "https://github.com/NickKelly1/nkp-config"
   },
   "scripts": {
     "build": "rimraf dist && tsc -p tsconfig.build.json",
-    "prepublishOnly": "npm build && cp package.json dist/ && cp LICENSE dist/",
-    "publish": "cd dist & npm run publish",
-    "postpublishOnly": "rm dist/package.json dist/LICENSE",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "config",
