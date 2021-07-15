@@ -1,9 +1,10 @@
 {
   "main": "dist/index.js",
   "name": "@nkp/config",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Tools to bootstrap a configuration objects in JavaScript",
   "author": "Nick Kelly",
+  "homepage": "https://github.com/NickKelly1/nkp-config/blob/master/README.md",
   "readme": "https://github.com/NickKelly1/nkp-config/blob/master/README.md",
   "private": false,
   "repository": {
