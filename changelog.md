@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.0.7 - 2021-07-14
+
+Release master branch
+
+## 0.0.6 - 2021-07-14
+
+Add `homepage` to package.json
+
 ## 0.0.5 - 2021-06-27
 
 ### Added
