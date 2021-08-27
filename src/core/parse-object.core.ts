@@ -18,7 +18,7 @@ export function parseObject<T extends ParseableObject<any>>(
   Object
     .entries(parseable)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .forEach(([pk, kv]: [string, unknown | TypeKey<any>]) => {
+    .forEach(([pk, kv,]: [string, unknown | TypeKey<any>]) => {
       if (kv instanceof TypeKey) {
         parsed[pk as keyof ParsedObject<T>]= parseValue(kv, from);
       } else {

@@ -1,4 +1,4 @@
-import { Fromable } from '../ts';
+import { Fromable, normaliseFromable } from '../ts';
 import { TypeKeyValue } from '../ts';
 import { TypeKey } from '../utils';
 
@@ -11,7 +11,7 @@ import { TypeKey } from '../utils';
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function parseValue<TK extends TypeKey>(tk: TK, from: Fromable = process.env): TypeKeyValue<TK> {
-  const value = from[tk.key as keyof Record<string, unknown>];
+  const value = normaliseFromable(from)[tk.key as keyof Record<string, unknown>];
   if (value === undefined) {
     // value is missing on the from obejct
     if (tk.type.otherwise === undefined) {

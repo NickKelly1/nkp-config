@@ -4,17 +4,28 @@ import { Config } from '@jest/types';
 export default async (): Promise<Config.InitialOptions> => ({
   // verbose: true,
 
+  rootDir: '../',
+
   preset: 'ts-jest',
-  testEnvironment: 'node',
-  // testMatch: ['**/+(*.)+(spec|test).+(ts|js)?(x)'],
-  // moduleFileExtensions: ['ts', 'js', 'jsx', 'tsx'],
+
+  coveragePathIgnorePatterns: ['.spec.util.ts',],
+
+  coverageDirectory: '<rootDir>/coverage',
+
+  // for DOM related:
+  // testEnvironment: 'jsdom',
 
   // https://stackoverflow.com/questions/50411719/shared-utils-functions-for-testing-with-jest/52910794
   globals: {
     'ts-jest': {
-      tsconfig: 'tsconfig.spec.json',
+      tsconfig: '<rootDir>/config/tsconfig.spec.json',
     },
   },
+
+  // https://www.carlrippon.com/using-jest-and-rtl-with-react-typescript/
+  setupFilesAfterEnv: [
+    '<rootDir>/config/jest.setup.ts',
+  ],
 
   modulePathIgnorePatterns: [
     '/node_modules/',

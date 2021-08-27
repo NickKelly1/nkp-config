@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.0.8 - 2021-08-26
+
+### Changed
+
+- Updated project configuration
+  - Use rollup for bundling
+  - Config similar to other `@nkp/*` packages
+- Changed `Fromable` signature to allow any value
+- Updated readme.md
+
 ## 0.0.7 - 2021-07-14
 
 Release master branch

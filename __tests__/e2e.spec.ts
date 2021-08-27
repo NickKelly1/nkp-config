@@ -14,7 +14,7 @@ import {
   FloatType,
   IntegerType,
   StringType,
-  Type,
+  Type
 } from '../src';
 
 describe('e2e', () => {
@@ -39,7 +39,7 @@ describe('e2e', () => {
 
   it('can parse an object', () => {
     const result = parse({
-      environment: key('NODE_ENV').as(oneOf(['production', 'development', 'testing'] as const)),
+      environment: key('NODE_ENV').as(oneOf(['production', 'development', 'testing',] as const)),
     }, {
       NODE_ENV: 'production',
     });
@@ -48,7 +48,7 @@ describe('e2e', () => {
 
   it('can parse a value', () => {
     const env = { NODE_ENV: 'production', };
-    const environment = key('NODE_ENV').as(oneOf(['production', 'development', 'testing'] as const)).get(env);
+    const environment = key('NODE_ENV').as(oneOf(['production', 'development', 'testing',] as const)).get(env);
     expect(environment).toBe('production');
   });
 });

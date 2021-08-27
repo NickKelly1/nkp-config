@@ -7,7 +7,7 @@ Set of functions to help parse environment variables and bootstrap configuration
 ### Parsing objects
 
 ```ts
-import { oneOf, integer, parse } from '@nkp/config';
+import { key, oneOf, integer, parse } from '@nkp/config';
 
 interface Config {
   port: number;
@@ -28,7 +28,7 @@ const config: Config = parse({
 Instead of parsing an object, a single key can be parsed.
 
 ```ts
-import { string } from '@nkp/config';
+import { key, string } from '@nkp/config';
 const email = key('EMAIL').as(string()).get();
 ```
 
@@ -37,7 +37,7 @@ const email = key('EMAIL').as(string()).get();
 Default values can be provided.
 
 ```ts
-import { integer } from '@nkp/config';
+import { key, integer } from '@nkp/config';
 const port = key('PORT').as(integer(3000)).get();
 ```
 
@@ -46,7 +46,7 @@ const port = key('PORT').as(integer(3000)).get();
 If no default value is provided and the key is not found, an error will be thrown.
 
 ```ts
-import { string } from '@nkp/config';
+import { key, string } from '@nkp/config';
 const vars = {};
 const value = key('MISSING_VALUE').as(string()).get(vars);
 // throws TypeError "MISSING_VALUE is not defined"
