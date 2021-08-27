@@ -9,6 +9,7 @@
   - Config similar to other `@nkp/*` packages
 - Changed `Fromable` signature to allow any value
 - Updated readme.md
+- Updated publish action
 
 ## 0.0.7 - 2021-07-14
 
