@@ -1,4 +1,4 @@
-import { parseValue } from '../core';
+import { parseValue } from '../parse-value';
 import { Fromable, TypeValue } from '../ts';
 import { Type, UnionType } from '../types';
 
@@ -31,7 +31,7 @@ export class TypeKey<TA extends Type = Type> {
   /**
    * Parse the value out using the type
    */
-  get(from: Fromable = process.env): TypeValue<TA> {
+  get(from: Fromable = (typeof process !== 'undefined' && process && process?.env) || {}): TypeValue<TA> {
     return parseValue(this, from);
   }
 }

@@ -1,6 +1,6 @@
 import { parseValue } from '.';
-import { Fromable, ParseableObject, ParsedObject } from '../ts';
-import { TypeKey } from '../utils';
+import { Fromable, ParseableObject, ParsedObject } from './ts';
+import { TypeKey } from './utils';
 
 /**
  * Parse an object whose keys are configured
@@ -12,7 +12,7 @@ import { TypeKey } from '../utils';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function parseObject<T extends ParseableObject<any>>(
   parseable: T,
-  from: Fromable = process.env,
+  from: Fromable = (typeof process !== 'undefined' && process && process?.env) || {},
 ): ParsedObject<T> {
   const parsed = {} as ParsedObject<T>;
   Object

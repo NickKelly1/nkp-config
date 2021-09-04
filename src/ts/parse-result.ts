@@ -10,7 +10,7 @@ export class ParseSuccess<T> {
 /**
  * Represents a failed parse
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 export class ParseFail<T = any> {
   public readonly isSuccessful: false = false;
   constructor(public readonly reason: string) {}

@@ -7,7 +7,7 @@ describe('OneOfType', () => {
       const result = (new OneOfType<Env>([
         'production',
         'development',
-        'testing'])).parse('production');
+        'testing',])).parse('production');
       expect(result.isSuccessful).toBe(true);
       if (result.isSuccessful) {
         expect (result.value).toBe('production');
@@ -19,7 +19,7 @@ describe('OneOfType', () => {
       const result = (new OneOfType<Env>([
         'production',
         'development',
-        'testing'])).parse('development');
+        'testing',])).parse('development');
       expect(result.isSuccessful).toBe(true);
       if (result.isSuccessful) {
         expect (result.value).toBe('development');
@@ -31,7 +31,7 @@ describe('OneOfType', () => {
       const result = (new OneOfType<Env>([
         'production',
         'development',
-        'testing'])).parse('testing');
+        'testing',])).parse('testing');
       expect(result.isSuccessful).toBe(true);
       if (result.isSuccessful) {
         expect (result.value).toBe('testing');
@@ -44,7 +44,7 @@ describe('OneOfType', () => {
         -1,
         0,
         1.5,
-        'string'])).parse(-1);
+        'string',])).parse(-1);
       expect(result.isSuccessful).toBe(true);
       if (result.isSuccessful) {
         expect (result.value).toBe(-1);
@@ -53,7 +53,7 @@ describe('OneOfType', () => {
 
     it('"singular" => "singular', () => {
       type Options = 'singular';
-      const result = (new OneOfType<Options>(['singular'])).parse('singular');
+      const result = (new OneOfType<Options>(['singular',])).parse('singular');
       expect(result.isSuccessful).toBe(true);
       if (result.isSuccessful) {
         expect (result.value).toBe('singular');
@@ -67,7 +67,7 @@ describe('OneOfType', () => {
       const result = (new OneOfType<Env>([
         'production',
         'development',
-        'testing'])).parse('prod');
+        'testing',])).parse('prod');
       expect(result.isSuccessful).toBe(false);
     });
 
@@ -76,7 +76,7 @@ describe('OneOfType', () => {
       const result = (new OneOfType<Env>([
         'production',
         'development',
-        'testing'])).parse(undefined);
+        'testing',])).parse(undefined);
       expect(result.isSuccessful).toBe(false);
     });
 
@@ -85,7 +85,7 @@ describe('OneOfType', () => {
       const result = (new OneOfType<Env>([
         'production',
         'development',
-        'testing'])).parse(null);
+        'testing',])).parse(null);
       expect(result.isSuccessful).toBe(false);
     });
 
@@ -95,7 +95,7 @@ describe('OneOfType', () => {
         -1,
         0,
         1.5,
-        'string'])).parse(0.0001);
+        'string',])).parse(0.0001);
       expect(result.isSuccessful).toBe(false);
     });
   });

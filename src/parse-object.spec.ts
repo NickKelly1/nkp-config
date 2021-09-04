@@ -1,19 +1,20 @@
-import { parse, parseObject } from '.';
-import { boolean, integer, key } from '../factories';
-import { oneOf } from '../factories/one-of.factory';
-import { string } from '../factories/string.factory';
+import { parseObject } from './parse-object';
+import { parse } from './parse';
+import { boolean, integer, key } from './factories';
+import { oneOf } from './factories/one-of.factory';
+import { string } from './factories/string.factory';
 
 describe('parse-object', () => {
   it('parses objects successfully', () => {
     const vars = { BOOL: true, };
-    const result = parse({ bool: key('BOOL').as(boolean()) }, vars);
+    const result = parse({ bool: key('BOOL').as(boolean()), }, vars);
     expect(result.bool).toBe(true);
   });
 
   it('throws on missing values', () => {
     expect(() => {
       const vars = { BOOL: true, };
-      parseObject({ bool: key('missing-key').as(boolean()) }, vars);
+      parseObject({ bool: key('missing-key').as(boolean()), }, vars);
     }).toThrow(TypeError);
   });
 
@@ -32,7 +33,7 @@ describe('parse-object', () => {
 
   it('uses default values', () => {
     const vars = { BOOL: true, };
-    const result = parseObject({ bool: key('BOOG').as(boolean(false)) }, vars);
+    const result = parseObject({ bool: key('BOOG').as(boolean(false)), }, vars);
     expect(result.bool).toBe(false);
   });
 
@@ -47,9 +48,9 @@ describe('parse-object', () => {
       PORT: key('PORT').as(integer()),
       HOST: key('HOST').as(string()),
       ORIGINS: key('origins').as(string()),
-      nodeenv: key('NODE_ENV').as(oneOf(['testing', 'production', 'development'] as const)),
+      nodeenv: key('NODE_ENV').as(oneOf(['testing', 'production', 'development',] as const)),
       missing: key('missing').as(oneOf(['abc', 'def',] as const, 'abc')),
-      keepingLiteral: 17
+      keepingLiteral: 17,
     }, vars);
     expect(env.PORT).toBe(3000);
     expect(env.HOST).toBe('http://me.com');

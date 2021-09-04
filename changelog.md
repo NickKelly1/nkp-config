@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.9 - 2021-09-03
+
+- Updated project configuration
+- Updated readme.md
+- Linted project
+
 ## 0.0.8 - 2021-08-26
 
 ### Changed

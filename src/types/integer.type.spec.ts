@@ -104,7 +104,7 @@ describe('IntegerType', () => {
         expect(result.isSuccessful).toBe(false);
       });
       it('"{ number: 5 }"', () => {
-        const result = (new IntegerType()).parse({ number: 5 });
+        const result = (new IntegerType()).parse({ number: 5, });
         expect(result.isSuccessful).toBe(false);
       });
       it('"[]"', () => {

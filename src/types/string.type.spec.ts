@@ -127,7 +127,7 @@ describe('StringType', () => {
         expect(result.isSuccessful).toBe(false);
       });
       it('[1, 2, 3]', () => {
-        const result = (new StringType()).parse([1, 2, 3]);
+        const result = (new StringType()).parse([1, 2, 3,]);
         expect(result.isSuccessful).toBe(false);
       });
     });

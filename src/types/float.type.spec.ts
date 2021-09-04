@@ -84,7 +84,7 @@ describe('FloatType', () => {
         expect(result.isSuccessful).toBe(false);
       });
       it('"{ number: 5 }"', () => {
-        const result = (new FloatType()).parse({ number: 5 });
+        const result = (new FloatType()).parse({ number: 5, });
         expect(result.isSuccessful).toBe(false);
       });
       it('"[]"', () => {

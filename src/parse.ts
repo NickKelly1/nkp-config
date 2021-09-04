@@ -1,7 +1,7 @@
-import { Fromable, ParseableObject, ParsedObject, TypeKeyValue } from '../ts';
-import { TypeKey } from '../utils';
-import { parseObject } from './parse-object.core';
-import { parseValue } from './parse-value.core';
+import { Fromable, ParseableObject, ParsedObject, TypeKeyValue } from './ts';
+import { TypeKey } from './utils';
+import { parseObject } from './parse-object';
+import { parseValue } from './parse-value';
 
 /**
  * Parse an object or value

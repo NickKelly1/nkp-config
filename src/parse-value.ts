@@ -1,6 +1,6 @@
-import { Fromable, normaliseFromable } from '../ts';
-import { TypeKeyValue } from '../ts';
-import { TypeKey } from '../utils';
+import { Fromable, normaliseFromable } from './ts';
+import { TypeKeyValue } from './ts';
+import { TypeKey } from './utils';
 
 /**
  * Parse a value

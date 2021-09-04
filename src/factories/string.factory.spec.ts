@@ -1,5 +1,5 @@
 import { StringType } from '../types';
-import { string } from '.';
+import { string } from './string.factory';
 
 describe('string factory', () => {
   it('creates a StringType', () => {
