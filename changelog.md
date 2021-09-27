@@ -1,6 +1,24 @@
 # Changelog
 
+## 0.0.10 - 2021-09-26
+
+### Added
+
+- Fluent interface to improve useability
+- `literal` type
+- `default()` helper method
+
+### Changed
+
+- Project folder structure
+
+### Removed
+
+- `otherwise` default option on types
+
 ## 0.0.9 - 2021-09-03
+
+### Changed
 
 - Updated project configuration
 - Updated readme.md
