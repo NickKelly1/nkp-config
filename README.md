@@ -1,7 +1,7 @@
 # nkp-config
 
 [![npm version](https://badge.fury.io/js/%40nkp%2Fconfig.svg)](https://www.npmjs.com/package/@nkp/config)
-[![Node.js Package](https://github.com/nickkelly1/config/actions/workflows/release.yml/badge.svg)](https://github.com/nickkelly1/nkp-config/actions/workflows/release.yml)
+[![Node.js Package](https://github.com/NickKelly1/nkp-config/actions/workflows/release.yml/badge.svg)](https://github.com/NickKelly1/nkp-config/actions/workflows/release.yml)
 ![Known Vulnerabilities](https://snyk.io/test/github/nickkelly1/nkp-config/badge.svg)
 
 Set of functions to help parse environment variables and bootstrap configuration objects.
