@@ -11,26 +11,37 @@ Set of functions to help parse environment variables and bootstrap configuration
 ### Parsing objects
 
 ```ts
-import { key, oneOf, integer, parse } from '@nkp/config';
+import * as c from '@nkp/config';
 
-interface Config {
-  port: number;
-  env: 'development' | 'testing' | 'production';
-}
+/**
+ * the parse function correctly sets the type of `config`
+ * {
+ *  DEBUG: false;
+ *  MAIL: string | undefined;
+ *  HOST: string;
+ *  PORT: number;
+ *  env: 'development' | 'testing' | 'production';
+ * }
+ */
+const config = c.parse({
+  // coerces DEBUG is a boolean defaulting to false if not provided
+  DEBUG: c.boolean().default(false),
 
-const config = parse({
-  port: key('PORT').integer(),
-  env: key('NODE_ENV').oneOf<Config['env']>([
-    'development',
-    'testing',
-    'production']),
+  // coerces MAIL_HOST to string, or leaves undefined if it doesn't exist
+  MAIL_HOST: c.string().optional(),
+
+  // coerces process.env.HOST to string
+  HOST: c.string() ,
+
+  // coerces process.env.PORT to string
+  // if not provided, defaults to 3000
+  PORT: c.integer().default(3000),
+
+  // ensures procese.env.NODE_ENV is one of the given values
+  env: c
+    .key('NODE_ENV')
+    .oneOf(['development', 'testing', 'production',] as const),
 }, process.env);
-
-// TypeScript knows config's type
-// config: {
-//    port: number,
-//    env: 'development' | 'testing' | 'production'
-// }
 ```
 
 ### Parsing values
@@ -38,8 +49,24 @@ const config = parse({
 Instead of parsing an object, a single key can be parsed.
 
 ```ts
-import { key, string } from '@nkp/config';
-const email = key('EMAIL').string().parse(process.env);
+import { key } from '@nkp/config';
+
+// by key - required
+const email1: string = key('EMAIL')
+  .string()
+  .parse(process.env);
+
+// by key - optional
+const email2: string | undefined = key('EMAIL')
+  .string()
+  .optional()
+  .parse(process.env);
+
+// by value - with default
+const email3: string = string()
+  .default('example@example.com')
+  .parse(process.env['EMAIL']);
+
 ```
 
 ### Default values

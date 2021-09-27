@@ -1,13 +1,27 @@
-import { Type } from './type';
-import { UnionType } from './union';
-import { BooleanOptions, BooleanType, boolean } from './boolean';
-import { FloatOptions, FloatType, float } from './float';
-import { IntegerOptions, IntegerType, integer } from './integer';
+import {
+  boolean,
+  BooleanOptions,
+  BooleanType,
+  float,
+  FloatOptions,
+  FloatType,
+  integer,
+  IntegerOptions,
+  IntegerType,
+  literal,
+  LiteralOptions,
+  LiteralType,
+  oneOf,
+  OneOfOptions,
+  OneOfType,
+  string,
+  StringOptions,
+  StringType,
+  Type,
+  UnionType
+} from './circular-dependencies';
 import { Typeable } from './constants';
-import { OneOfOptions, OneOfType, oneOf } from './one-of';
-import { StringOptions, StringType, string } from './string';
 import { Fromable, normaliseFromable, ParseFail, ParseResult, ParseSuccess } from './ts';
-import { literal, LiteralOptions, LiteralType } from './literal';
 import { hasOwn } from './utils';
 
 /**
@@ -57,6 +71,12 @@ export class TypeKey<TA extends Type = Type> {
     return new TypeKey(this.key, this.type.default(value));
   }
 
+  /**
+   * Set the default value if the value is not given
+   */
+  optional(): TypeKey<UnionType<TA, LiteralType<undefined>>> {
+    return new TypeKey(this.key, this.type.optional());
+  }
 
   /**
    * Union this type with another type
@@ -106,9 +126,9 @@ export class TypeKey<TA extends Type = Type> {
       return new ParseSuccess(result.value);
     }
     if (isSet) {
-      return new ParseFail('value is set');
+      return new ParseFail(TypeKey.toReason(this.key, 'value is set'));
     }
-    return new ParseFail('value is not set');
+    return new ParseFail(TypeKey.toReason(this.key, 'value is not set'));
   }
 }
 

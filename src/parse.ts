@@ -41,12 +41,12 @@ export function parse<T extends { readonly [K: PropertyKey]: Type | TypeKey }>(
         const isSet = hasOwn(_from, key);
         if (tk.handles(_from[key], { isSet, })) {
           const value = _from[key];
-          const result = tk.tryParse(value);
+          const result = tk.tryParse(value, { isSet, });
           if (result.isSuccessful) parsed[key] = result.value;
           else parseErrors.push(TypeKey.toReason(key, result.reason));
         } else {
-          if (isSet) parseErrors.push('value is set');
-          else parseErrors.push('value is not set');
+          if (isSet) parseErrors.push(TypeKey.toReason(key, 'value is set'));
+          else parseErrors.push(TypeKey.toReason(key, 'value is not set'));
         }
       }
       else {
@@ -55,11 +55,11 @@ export function parse<T extends { readonly [K: PropertyKey]: Type | TypeKey }>(
     });
 
   if (criticalErrors.length) {
-    throw new TypeError(`Bad input:\n${criticalErrors.map((e, i) => `\t${i}. ${e}`).join('\n')}`);
+    throw new TypeError(`Bad input:\n${criticalErrors.map((e, i) => `\t${i + 1}. ${e}`).join('\n')}`);
   }
 
   if (parseErrors.length) {
-    throw new TypeError(`Failed:\n${parseErrors.map((e, i) => `\t${i}. ${e}`).join('\n')}`);
+    throw new TypeError(`Failed to parse object:\n${parseErrors.map((e, i) => `\t${i + 1}. ${e}`).join('\n')}`);
   }
 
   return parsed as any;

@@ -1,4 +1,4 @@
-import { ParseResult, ParseSuccess, ParseFail, ParseValueOptions } from './ts';
+import { ParseResult, ParseFail, ParseValueOptions } from './ts';
 import { Type } from './type';
 import { getIsSet } from './utils';
 

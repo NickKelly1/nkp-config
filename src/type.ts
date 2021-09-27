@@ -1,24 +1,25 @@
 import {
+  boolean,
   BooleanOptions,
   BooleanType,
-  boolean,
+  float,
   FloatOptions,
   FloatType,
-  float,
+  integer,
   IntegerOptions,
   IntegerType,
-  integer,
-  LiteralOptions,
   literal,
+  LiteralBehavior,
+  LiteralOptions,
   LiteralType,
+  oneOf,
   OneOfOptions,
   OneOfType,
-  oneOf,
+  string,
   StringOptions,
   StringType,
-  string,
-  UnionType,
-  LiteralBehavior
+  TypeKey,
+  UnionType
 } from './circular-dependencies';
 import { Typeable } from './constants';
 import { ParseResult, ParseValueOptions } from './ts';
@@ -88,6 +89,16 @@ export abstract class Type<T = any> {
   }
 
   /**
+   * Key and type
+   *
+   * @param key
+   * @returns
+   */
+  key(key: string): TypeKey<this> {
+    return new TypeKey(key, this);
+  }
+
+  /**
    * Union this type with another type
    */
   get or(): TypeOr<this> {
@@ -99,6 +110,15 @@ export abstract class Type<T = any> {
    */
   default(value: T): UnionType<this, LiteralType<T>> {
     return this.or.literal(value, { behavior: LiteralBehavior.HandleUnsetOnly, });
+  }
+
+  /**
+   * Set the default value, if the value is not given, to undefined
+   *
+   * @returns
+   */
+  optional(): UnionType<this, LiteralType<undefined>> {
+    return this.or.literal(undefined, { behavior: LiteralBehavior.HandleUnsetOnly, });
   }
 
   /**

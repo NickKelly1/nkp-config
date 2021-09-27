@@ -6,3 +6,6 @@ export {
   oneOf,
   string
 } from './circular-dependencies';
+export {
+  key
+} from './key';

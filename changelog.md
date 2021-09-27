@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.0.12 - 2021-09-26
+
+### Added
+
+- `optional`
+- `Type.prototype.key`
+
+### Changed
+
+- Updated `readme.md`
+
 ## 0.0.11 - 2021-09-26
 
 ### Changed

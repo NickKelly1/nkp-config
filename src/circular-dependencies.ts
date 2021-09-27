@@ -1,4 +1,5 @@
 export * from './type';
+export * from './type-key';
 export * from './union';
 export * from './boolean';
 export * from './string';
