@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.0.13 - 2021-12-23
+
+### Added
+
+- Numeric and string parsing options
+
+### Updated
+
+- Improved type inference
+- Improved error messages
+
 ## 0.0.12 - 2021-09-26
 
 ### Added
