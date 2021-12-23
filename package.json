@@ -1,7 +1,7 @@
 {
   "name": "@nkp/config",
   "sideEffects": false,
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "Tools to bootstrap a configuration objects in JavaScript",
   "main": "cjs/index.js",
   "module": "es/index.js",
