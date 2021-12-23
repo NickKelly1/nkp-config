@@ -28,8 +28,8 @@ describe('TypeKey', () => {
       const tkUnion = tkBoolean.union(integerType);
       expect(tkUnion.key).toBe('key');
       expect(tkUnion.type).toBeInstanceOf(UnionType);
-      expect(tkUnion.type.ta).toBe(booleanType);
-      expect(tkUnion.type.tb).toBe(integerType);
+      expect((tkUnion.type as UnionType<any, any>).tt).toBe(booleanType);
+      expect((tkUnion.type as UnionType<any, any>).tu).toBe(integerType);
     });
   });
 

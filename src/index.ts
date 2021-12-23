@@ -9,4 +9,4 @@ export {
 export * as t from './types';
 
 export { key } from './key';
-export { parse } from './parse';
+export { parse } from './parser';

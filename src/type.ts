@@ -1,63 +1,44 @@
 import {
   boolean,
   BooleanOptions,
-  BooleanType,
   float,
   FloatOptions,
-  FloatType,
   integer,
   IntegerOptions,
-  IntegerType,
   literal,
-  LiteralBehavior,
   LiteralOptions,
-  LiteralType,
   oneOf,
   OneOfOptions,
-  OneOfType,
   string,
   StringOptions,
-  StringType,
   TypeKey,
   UnionType
 } from './circular-dependencies';
 import { Typeable } from './constants';
-import { ParseResult, ParseValueOptions } from './ts';
-import { getIsSet } from './utils';
+import { Parse } from './parse';
+import { Failure } from './failure';
+import { IsSetOptions, ParseInfo } from './ts';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export interface TypeOptions<T> {}
+export interface TypeOptions<T> extends IsSetOptions {
+  //
+}
 
 /**
  * Represents a parseable type
  */
 export abstract class Type<T = any> {
+  /** virtal property for type inference */
+  public get _v(): T { throw new Error('Inaccessable property "_v"'); }
+
   public get kind(): Typeable.Type { return Typeable.Type; }
 
-  protected readonly options?: TypeOptions<T>;
-
-  public get handlesUnset(): boolean { return false; }
-  public get handlesSet(): boolean { return true; }
+  public readonly options?: TypeOptions<T>;
 
   /**
-   * Is this type intended to handle this situation?
+   * Is the value a Type instance?
    *
-   * @param value
-   * @param options
-   * @returns
-   */
-  public handles(value: unknown, options?: ParseValueOptions): boolean {
-    const isSet = getIsSet(options);
-    if (isSet && this.handlesSet) return true;
-    if (!isSet && this.handlesUnset) return true;
-    return false;
-  }
-
-  /**
-   * Is the value a Type?
-   *
-   * @param value
-   * @returns
+   * @param value     value to check
+   * @returns         whether value is an instance of this TypeClass?
    */
   public static is(value: unknown): value is Type {
     if (!value) return false;
@@ -65,8 +46,13 @@ export abstract class Type<T = any> {
     return false;
   }
 
-  /** fake property - helps type inference */
-  public get _v(): T { throw new Error('Inaccessable property "_v"'); }
+  /**
+   * Try to parse the value
+   *
+   * @param unk
+   * @param opts
+   */
+  protected abstract handle(unk: unknown, info: ParseInfo): Parse.Output<T>;
 
   /**
    * Try to parse the value
@@ -74,7 +60,15 @@ export abstract class Type<T = any> {
    * @param unk
    * @param opts
    */
-  abstract tryParse(unk: unknown, options?: ParseValueOptions): ParseResult<T>;
+  public tryParse(unk: unknown, info?: Partial<ParseInfo>): Parse.Output<T> {
+    const _info: ParseInfo = {
+      isSet: info?.isSet ?? true,
+    };
+
+    const output = this.handle(unk, _info);
+
+    return output;
+  }
 
   /**
    * Parse the value
@@ -82,10 +76,21 @@ export abstract class Type<T = any> {
    * @param from
    * @returns
    */
-  public parse(from: unknown, options?: ParseValueOptions): T {
-    const tried = this.tryParse(from, options);
-    if (!tried.isSuccessful) throw new TypeError(`Failed to parse type: ${tried.reason}`);
-    return tried.value;
+  public parse(from: unknown, info?: Partial<ParseInfo>): T {
+    const _info: ParseInfo = {
+      isSet: info?.isSet ?? true,
+    };
+
+    const output = this.handle(from, _info);
+
+      // fail
+    if (Parse.isFail(output)) {
+      // throw
+      throw new TypeError(`Failed to parse type: ${Failure.stringify(output.value)}`);
+    }
+
+    // success
+    return output.value;
   }
 
   /**
@@ -94,22 +99,29 @@ export abstract class Type<T = any> {
    * @param key
    * @returns
    */
-  key(key: string): TypeKey<this> {
+  key(key: string): TypeKey<T> {
     return new TypeKey(key, this);
   }
 
   /**
    * Union this type with another type
    */
-  get or(): TypeOr<this> {
+  get or(): TypeOr<T> {
     return new TypeOr(this);
   }
 
   /**
    * Set the default value if the value is not given
    */
-  default(value: T): UnionType<this, LiteralType<T>> {
-    return this.or.literal(value, { behavior: LiteralBehavior.HandleUnsetOnly, });
+  default(value: T): Type<T> {
+    return this.or.literal(value);
+  }
+
+  /**
+   * Set the default value if the value is not given
+   */
+  defaultW<U>(value: U): Type<T | U> {
+    return this.or.literal(value);
   }
 
   /**
@@ -117,8 +129,8 @@ export abstract class Type<T = any> {
    *
    * @returns
    */
-  optional(): UnionType<this, LiteralType<undefined>> {
-    return this.or.literal(undefined, { behavior: LiteralBehavior.HandleUnsetOnly, });
+  optional(): Type<T | undefined> {
+    return this.or.literal(undefined);
   }
 
   /**
@@ -127,14 +139,14 @@ export abstract class Type<T = any> {
    * @param type
    * @returns
    */
-  public union<V extends Type>(type: V): UnionType<this, V> {
+  public union<U>(type: Type<U>): Type<T | U> {
     const t = new UnionType(this, type);
     return t;
   }
 }
 
-export class TypeOr<TA extends Type> {
-  constructor(protected readonly root: TA) {}
+export class TypeOr<U = any> {
+  constructor(protected readonly root: Type<U>) {}
 
 
   /**
@@ -143,7 +155,7 @@ export class TypeOr<TA extends Type> {
    * @param options
    * @returns
    */
-  literal<T>(value: T, options?: LiteralOptions<T>): UnionType<TA, LiteralType<T>> {
+  literal<T>(value: T, options?: LiteralOptions<T>): Type<U | T> {
     return this.root.union(literal(value, options));
   }
 
@@ -154,7 +166,7 @@ export class TypeOr<TA extends Type> {
    * @param options
    * @returns
    */
-  boolean(options?: BooleanOptions): UnionType<TA, BooleanType> {
+  boolean(options?: BooleanOptions): Type<U | boolean> {
     return this.root.union(boolean(options));
   }
 
@@ -164,7 +176,7 @@ export class TypeOr<TA extends Type> {
    * @param options
    * @returns
    */
-  float(options?: FloatOptions): UnionType<TA, FloatType> {
+  float(options?: FloatOptions): Type<U | number> {
     return this.root.union(float(options));
   }
 
@@ -174,7 +186,7 @@ export class TypeOr<TA extends Type> {
    * @param options
    * @returns
    */
-  integer(options?: IntegerOptions): UnionType<TA, IntegerType> {
+  integer(options?: IntegerOptions): Type<U | number> {
     return this.root.union(integer(options));
   }
 
@@ -184,7 +196,7 @@ export class TypeOr<TA extends Type> {
    * @param options
    * @returns
    */
-  string(options?: StringOptions): UnionType<TA, StringType> {
+  string(options?: StringOptions): Type<U | string> {
     return this.root.union(string(options));
   }
 
@@ -195,7 +207,7 @@ export class TypeOr<TA extends Type> {
    * @param options
    * @returns
    */
-  oneOf<T>(values: readonly T[], options?: OneOfOptions<T>): UnionType<TA, OneOfType<T>> {
+  oneOf<T>(values: readonly T[], options?: OneOfOptions<T>): Type<U | T> {
     return this.root.union(oneOf(values, options));
   }
 }

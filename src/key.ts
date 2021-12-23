@@ -1,11 +1,11 @@
 import { TypeKey } from './type-key';
 import { Type } from './type';
-import { BooleanOptions, BooleanType, boolean } from './boolean';
-import { FloatOptions, FloatType, float } from './float';
-import { IntegerOptions, IntegerType, integer } from './integer';
-import { OneOfOptions, OneOfType, oneOf } from './one-of';
-import { StringOptions, StringType, string } from './string';
-import { literal, LiteralOptions, LiteralType } from './literal';
+import { BooleanOptions, boolean } from './boolean';
+import { FloatOptions, float } from './float';
+import { IntegerOptions, integer } from './integer';
+import { OneOfOptions, oneOf } from './one-of';
+import { StringOptions, string } from './string';
+import { literal, LiteralOptions } from './literal';
 
 export class Key {
   constructor(public readonly name: string) {}
@@ -26,7 +26,7 @@ export class Key {
    * @param options
    * @returns
    */
-  literal<T>(value: T, options?: LiteralOptions<T>): TypeKey<LiteralType<T>> {
+  literal<T>(value: T, options?: LiteralOptions<T>): TypeKey<T> {
     return new TypeKey(this.name, literal(value, options));
   }
 
@@ -36,7 +36,7 @@ export class Key {
    * @param options
    * @returns
    */
-  integer(options?: IntegerOptions): TypeKey<IntegerType> {
+  integer(options?: IntegerOptions): TypeKey<number> {
     return new TypeKey(this.name, integer(options));
   }
 
@@ -46,7 +46,7 @@ export class Key {
    * @param options
    * @returns
    */
-  boolean(options?: BooleanOptions): TypeKey<BooleanType> {
+  boolean(options?: BooleanOptions): TypeKey<boolean> {
     return new TypeKey(this.name, boolean(options));
   }
 
@@ -56,7 +56,7 @@ export class Key {
    * @param options
    * @returns
    */
-  float(options?: FloatOptions): TypeKey<FloatType> {
+  float(options?: FloatOptions): TypeKey<number> {
     return new TypeKey(this.name, float(options));
   }
 
@@ -67,7 +67,7 @@ export class Key {
    * @param options
    * @returns
    */
-  oneOf<T>(values: readonly T[], options?: OneOfOptions<T>): TypeKey<OneOfType<T>> {
+  oneOf<T>(values: readonly T[], options?: OneOfOptions<T>): TypeKey<T> {
     return new TypeKey(this.name, oneOf(values, options));
   }
 
@@ -77,7 +77,7 @@ export class Key {
    * @param options
    * @returns
    */
-  string(options?: StringOptions): TypeKey<StringType> {
+  string(options?: StringOptions): TypeKey<string> {
     return new TypeKey(this.name, string(options));
   }
 }

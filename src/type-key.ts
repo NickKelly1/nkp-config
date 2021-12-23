@@ -1,28 +1,30 @@
 import {
   boolean,
   BooleanOptions,
-  BooleanType,
   float,
   FloatOptions,
-  FloatType,
   integer,
   IntegerOptions,
-  IntegerType,
   literal,
   LiteralOptions,
-  LiteralType,
   oneOf,
   OneOfOptions,
-  OneOfType,
   string,
   StringOptions,
-  StringType,
   Type,
-  UnionType
 } from './circular-dependencies';
 import { Typeable } from './constants';
-import { Fromable, normaliseFromable, ParseFail, ParseResult, ParseSuccess } from './ts';
-import { hasOwn } from './utils';
+import { Failure } from './failure';
+import { Parse } from './parse';
+import {
+  Fromable,
+  ParseInfo,
+} from './ts';
+import {
+  defaultFromable,
+  isPropertySet,
+  normaliseFromable,
+} from './utils';
 
 /**
  * Tuple of Key and Type
@@ -31,7 +33,10 @@ import { hasOwn } from './utils';
  * Type is the parser for the keys value
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class TypeKey<TA extends Type = Type> {
+export class TypeKey<T = any> {
+  /** virtal property for type inference */
+  public get _v(): T { throw new Error('Inaccessable property "_v"'); }
+
   /**
    * Create a readable reason that a parse failed
    *
@@ -39,12 +44,12 @@ export class TypeKey<TA extends Type = Type> {
    * @param valueReason
    * @returns
    */
-  public static toReason(key: PropertyKey, valueReason: string): string {
-    return `${String(key)}: ${valueReason}`;
+  public static toReason(key: PropertyKey, valueReason: Parse.FailType): string {
+    return `${String(key)}: ${Failure.stringify(valueReason)}`;
   }
 
   /**
-   * Is the value a TypeKey?
+   * Is the value a TypeKey instance?
    *
    * @param value
    * @returns
@@ -55,9 +60,15 @@ export class TypeKey<TA extends Type = Type> {
     return false;
   }
 
+  /**
+   * TypeKey constructor
+   *
+   * @param key       key of the host object
+   * @param type      expected type of the key's value
+   */
   constructor(
     public readonly key: string,
-    public readonly type: TA
+    public readonly type: Type<T>
   ) {
     //
   }
@@ -67,21 +78,29 @@ export class TypeKey<TA extends Type = Type> {
   /**
    * Set the default value if the value is not given
    */
-  default(value: TA['_v']): TypeKey<UnionType<TA, LiteralType<TA['_v']>>> {
+  default(value: T): TypeKey<T> {
     return new TypeKey(this.key, this.type.default(value));
+  }
+
+
+  /**
+   * Set the default value if the value is not given
+   */
+  defaultW<U>(value: U): TypeKey<this['_v'] | U> {
+    return this.or.literal(value);
   }
 
   /**
    * Set the default value if the value is not given
    */
-  optional(): TypeKey<UnionType<TA, LiteralType<undefined>>> {
+  optional(): TypeKey<T | undefined> {
     return new TypeKey(this.key, this.type.optional());
   }
 
   /**
    * Union this type with another type
    */
-  public get or(): TypeKeyOr<TA> {
+  public get or(): TypeKeyOr<T> {
     return new TypeKeyOr(this);
   }
 
@@ -92,7 +111,7 @@ export class TypeKey<TA extends Type = Type> {
    * @returns
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public union<TB extends Type>(orType: TB): TypeKey<UnionType<TA, TB>> {
+  public union<U>(orType: Type<U>): TypeKey<T | U> {
     return new TypeKey(this.key, this.type.union(orType));
   }
 
@@ -102,10 +121,17 @@ export class TypeKey<TA extends Type = Type> {
    * @param from
    * @returns
    */
-  public parse(from: Fromable = (typeof process !== 'undefined' && process && process?.env) || {}): TA['_v'] {
-    const tried = this.tryParse(from);
-    if (!tried.isSuccessful) throw new TypeError(`Failed to parse type-key: ${tried.reason}`);
-    return tried.value;
+  public parse(from: Fromable = defaultFromable()): T {
+    const output = this.tryParse(from);
+
+    // fail
+    if (Parse.isFail(output)) {
+      // throw
+      throw new TypeError(TypeKey.toReason(this.key, output.value));
+    }
+
+    // success
+    return output.value;
   }
 
   /**
@@ -114,26 +140,18 @@ export class TypeKey<TA extends Type = Type> {
    * @param from
    * @returns
    */
-  tryParse(from: Fromable = (typeof process !== 'undefined' && process && process?.env) || {}): ParseResult<TA['_v']> {
-    const normalized = normaliseFromable(from);
-    const isSet = hasOwn(normalized, this.key);
-    const value = normalized[this.key];
-    if (this.type.handles(value, { isSet, })) {
-      const result = this.type.tryParse(value, { isSet, });
-      if (!result.isSuccessful) {
-        return new ParseFail(TypeKey.toReason(this.key, result.reason));
-      }
-      return new ParseSuccess(result.value);
-    }
-    if (isSet) {
-      return new ParseFail(TypeKey.toReason(this.key, 'value is set'));
-    }
-    return new ParseFail(TypeKey.toReason(this.key, 'value is not set'));
+  tryParse(from: Fromable = defaultFromable): Parse.Output<T> {
+    const _from = normaliseFromable(from);
+    const isSet = isPropertySet(_from, this.key);
+    const value = _from[this.key];
+    const info: ParseInfo = { isSet, }
+    const output = this.type.tryParse(value, info);
+    return output;
   }
 }
 
-export class TypeKeyOr<TA extends Type = Type> {
-  constructor(protected readonly root: TypeKey<TA>) {}
+export class TypeKeyOr<T = any> {
+  constructor(protected readonly root: TypeKey<T>) {}
 
   /**
    * Union this type with a Literal type
@@ -141,7 +159,7 @@ export class TypeKeyOr<TA extends Type = Type> {
    * @param options
    * @returns
    */
-  literal<T>(value: T, options?: LiteralOptions<T>): TypeKey<UnionType<TA, LiteralType<T>>> {
+  literal<U>(value: U, options?: LiteralOptions<U>): TypeKey<T | U> {
     return this.root.union(literal(value, options));
   }
 
@@ -151,7 +169,7 @@ export class TypeKeyOr<TA extends Type = Type> {
    * @param options
    * @returns
    */
-  boolean(options?: BooleanOptions): TypeKey<UnionType<TA, BooleanType>> {
+  boolean(options?: BooleanOptions): TypeKey<T | boolean> {
     return this.root.union(boolean(options));
   }
 
@@ -161,7 +179,7 @@ export class TypeKeyOr<TA extends Type = Type> {
    * @param options
    * @returns
    */
-  float(options?: FloatOptions): TypeKey<UnionType<TA, FloatType>> {
+  float(options?: FloatOptions): TypeKey<T | number> {
     return this.root.union(float(options));
   }
 
@@ -171,7 +189,7 @@ export class TypeKeyOr<TA extends Type = Type> {
    * @param options
    * @returns
    */
-  integer(options?: IntegerOptions): TypeKey<UnionType<TA, IntegerType>> {
+  integer(options?: IntegerOptions): TypeKey<T | number> {
     return this.root.union(integer(options));
   }
 
@@ -181,7 +199,7 @@ export class TypeKeyOr<TA extends Type = Type> {
    * @param options
    * @returns
    */
-  string(options?: StringOptions): TypeKey<UnionType<TA, StringType>> {
+  string(options?: StringOptions): TypeKey<T | string> {
     return this.root.union(string(options));
   }
 
@@ -192,7 +210,7 @@ export class TypeKeyOr<TA extends Type = Type> {
    * @param options
    * @returns
    */
-  oneOf<T>(values: readonly T[], options?: OneOfOptions<T>): TypeKey<UnionType<TA, OneOfType<T>>> {
+  oneOf<U>(values: readonly U[], options?: OneOfOptions<U>): TypeKey<T | U> {
     return this.root.union(oneOf(values, options));
   }
 }

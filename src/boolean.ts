@@ -1,5 +1,7 @@
 import { TypeOptions, Type } from './circular-dependencies';
-import { ParseResult, ParseSuccess, ParseFail } from './ts';
+import { Failure } from './failure';
+import { Parse } from './parse';
+import { ParseInfo } from './ts';
 
 export interface BooleanOptions extends TypeOptions<boolean> {}
 
@@ -7,33 +9,38 @@ export interface BooleanOptions extends TypeOptions<boolean> {}
  * Represents a parseable boolean
  */
 export class BooleanType extends Type<boolean> {
-  constructor(protected override readonly options?: BooleanOptions) {
+  constructor(public override readonly options?: BooleanOptions) {
     super();
   }
 
   /** @inheritdoc */
-  tryParse(unk: unknown): ParseResult<boolean> {
+  handle(unk: unknown, info: ParseInfo): Parse.Output<boolean> {
+    const { isSet } = info;
+
+    // must be set
+    if (!isSet) return Parse.fail(Failure.isNotSet);
+
     switch (typeof unk) {
-    case 'boolean': return new ParseSuccess(unk);
+    case 'boolean': return Parse.success(unk);
     case 'string': {
       const lc = unk.toLowerCase().trim();
-      if (lc === 'true') return new ParseSuccess(true);
-      if (lc === 'false') return new ParseSuccess(false);
-      if (lc === '1') return new ParseSuccess(true);
-      if (lc === '0') return new ParseSuccess(false);
-      return new ParseFail('is not a boolean');
+      if (lc === 'true') return Parse.success(true);
+      if (lc === 'false') return Parse.success(false);
+      if (lc === '1') return Parse.success(true);
+      if (lc === '0') return Parse.success(false);
+      return Parse.fail('Must be a boolean.');
     }
     case 'number': {
-      if (unk === 0) return new ParseSuccess(false);
-      if (unk === 1) return new ParseSuccess(true);
-      return new ParseFail('is not a boolean');
+      if (unk === 0) return Parse.success(false);
+      if (unk === 1) return Parse.success(true);
+      return Parse.fail('Must be a boolean.');
     }
     case 'bigint': {
-      if (unk === BigInt(0)) return new ParseSuccess(false);
-      if (unk === BigInt(1)) return new ParseSuccess(true);
-      return new ParseFail('is not a boolean');
+      if (unk === BigInt(0)) return Parse.success(false);
+      if (unk === BigInt(1)) return Parse.success(true);
+      return Parse.fail('Must be a boolean.');
     }
-    default: return new ParseFail('is not a boolean');
+    default: return Parse.fail('Must be a boolean.');
     }
   }
 }

@@ -1,4 +1,5 @@
 import { OneOfType, oneOf } from './one-of';
+import { Parse } from './parse';
 
 describe('OneOfType', () => {
   describe('successfully parses', () => {
@@ -8,8 +9,8 @@ describe('OneOfType', () => {
         'production',
         'development',
         'testing',])).tryParse('production');
-      expect(result.isSuccessful).toBe(true);
-      if (result.isSuccessful) {
+      expect(Parse.isSuccess(result)).toBe(true);
+      if (Parse.isSuccess(result)) {
         expect (result.value).toBe('production');
       }
     });
@@ -20,8 +21,8 @@ describe('OneOfType', () => {
         'production',
         'development',
         'testing',])).tryParse('development');
-      expect(result.isSuccessful).toBe(true);
-      if (result.isSuccessful) {
+      expect(Parse.isSuccess(result)).toBe(true);
+      if (Parse.isSuccess(result)) {
         expect (result.value).toBe('development');
       }
     });
@@ -32,8 +33,8 @@ describe('OneOfType', () => {
         'production',
         'development',
         'testing',])).tryParse('testing');
-      expect(result.isSuccessful).toBe(true);
-      if (result.isSuccessful) {
+      expect(Parse.isSuccess(result)).toBe(true);
+      if (Parse.isSuccess(result)) {
         expect (result.value).toBe('testing');
       }
     });
@@ -45,8 +46,8 @@ describe('OneOfType', () => {
         0,
         1.5,
         'string',])).tryParse(-1);
-      expect(result.isSuccessful).toBe(true);
-      if (result.isSuccessful) {
+      expect(Parse.isSuccess(result)).toBe(true);
+      if (Parse.isSuccess(result)) {
         expect (result.value).toBe(-1);
       }
     });
@@ -54,8 +55,8 @@ describe('OneOfType', () => {
     it('"singular" => "singular', () => {
       type Options = 'singular';
       const result = (new OneOfType<Options>(['singular',])).tryParse('singular');
-      expect(result.isSuccessful).toBe(true);
-      if (result.isSuccessful) {
+      expect(Parse.isSuccess(result)).toBe(true);
+      if (Parse.isSuccess(result)) {
         expect (result.value).toBe('singular');
       }
     });
@@ -68,7 +69,7 @@ describe('OneOfType', () => {
         'production',
         'development',
         'testing',])).tryParse('prod');
-      expect(result.isSuccessful).toBe(false);
+      expect(Parse.isSuccess(result)).toBe(false);
     });
 
     it('"production | development | testing" => undefined', () => {
@@ -77,7 +78,7 @@ describe('OneOfType', () => {
         'production',
         'development',
         'testing',])).tryParse(undefined);
-      expect(result.isSuccessful).toBe(false);
+      expect(Parse.isSuccess(result)).toBe(false);
     });
 
     it('"production | development | testing" => null', () => {
@@ -86,7 +87,7 @@ describe('OneOfType', () => {
         'production',
         'development',
         'testing',])).tryParse(null);
-      expect(result.isSuccessful).toBe(false);
+      expect(Parse.isSuccess(result)).toBe(false);
     });
 
     it('-1 | 0 | 1.5 | "string" => 0.0001', () => {
@@ -96,7 +97,7 @@ describe('OneOfType', () => {
         0,
         1.5,
         'string',])).tryParse(0.0001);
-      expect(result.isSuccessful).toBe(false);
+      expect(Parse.isSuccess(result)).toBe(false);
     });
   });
 });

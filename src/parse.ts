@@ -1,66 +1,44 @@
-import { Fromable, normaliseFromable } from './ts';
-import { Type } from './type';
-import { TypeKey } from './type-key';
-import { hasOwn } from './utils';
-
+import { Failure } from "./failure";
+import { Result } from "./result";
+import { Tree } from "./tree";
 
 /**
- * Parse an object whose keys are configured
- *
- * @param shape
- * @param from
- * @returns
+ * Represents of parsing values
  */
-export function parse<T extends { readonly [K: PropertyKey]: Type | TypeKey }>(
-  shape: T,
-  from: Fromable = (typeof process !== 'undefined' && process && process?.env) || {},
-): {
-  // types are not aliased (they are inlined) to provide better type hinting for the consumer
-  [K in keyof T]: T[K] extends TypeKey
-    ? T[K]['type']['_v']
-    : T[K] extends Type
-      ? T[K]['_v']
-      : T[K];
-} {
-  const _from = normaliseFromable(from);
-  const parsed = {} as Record<PropertyKey, unknown>;
+export namespace Parse {
+  /**
+   * Output when parsing fails
+   */
+  export type FailType = Tree.Node<Failure>;
 
-  const parseErrors: string[] = [];
-  const criticalErrors: string[] = [];
+  /**
+   * Output result from parsing a value
+   */
+  export type Output<T> = Result<T, FailType>;
 
-  (Object.getOwnPropertySymbols(shape) as PropertyKey[])
-    .concat(Object.getOwnPropertyNames(shape))
-    .forEach((key) => {
-      const tk: unknown | Type | TypeKey = shape[key]!;
-      if (TypeKey.is(tk)) {
-        const result = tk.tryParse(_from);
-        if (result.isSuccessful) parsed[key] = result.value;
-        else parseErrors.push(result.reason);
-      }
-      else if (Type.is(tk)) {
-        const isSet = hasOwn(_from, key);
-        if (tk.handles(_from[key], { isSet, })) {
-          const value = _from[key];
-          const result = tk.tryParse(value, { isSet, });
-          if (result.isSuccessful) parsed[key] = result.value;
-          else parseErrors.push(TypeKey.toReason(key, result.reason));
-        } else {
-          if (isSet) parseErrors.push(TypeKey.toReason(key, 'value is set'));
-          else parseErrors.push(TypeKey.toReason(key, 'value is not set'));
-        }
-      }
-      else {
-        criticalErrors.push(`Input "<shape>.${String(key)}" must be either a ${Type.name} or ${TypeKey.name}`);
-      }
-    });
+  /**
+   * Parsing failed on this point
+   */
+  export const success = Result.success as (<T>(value: T) => Parse.Output<T>);
 
-  if (criticalErrors.length) {
-    throw new TypeError(`Bad input:\n${criticalErrors.map((e, i) => `\t${i + 1}. ${e}`).join('\n')}`);
+  /**
+   * Parsing failed on this point
+   * 
+   * @param reason    reason parsing failed
+   * @returns         result type representing the failure
+   */
+  export function fail<T>(reason: Tree.Node<Failure> | string): Parse.Output<T> {
+    if (typeof reason === 'string') return Result.fail(Failure.single(reason));
+    return Result.fail(reason);
   }
 
-  if (parseErrors.length) {
-    throw new TypeError(`Failed to parse object:\n${parseErrors.map((e, i) => `\t${i + 1}. ${e}`).join('\n')}`);
-  }
+  /**
+   * Did parsing succeed?
+   */
+  export const isSuccess = Result.isSuccess as (<T>(output: Parse.Output<T>) => output is Result.Success<T>);
 
-  return parsed as any;
+  /**
+   * Did parsing fail?
+   */
+  export const isFail = Result.isFail as (<T>(output: Parse.Output<T>) => output is Result.Fail<Tree.Node<Failure>>);
 }

@@ -1,5 +1,7 @@
 import { TypeOptions, Type } from './circular-dependencies';
-import { ParseResult, ParseSuccess, ParseFail } from './ts';
+import { Failure } from './failure';
+import { Parse } from './parse';
+import { ParseInfo } from './ts';
 
 export interface OneOfOptions<T> extends TypeOptions<T> {}
 
@@ -9,16 +11,21 @@ export interface OneOfOptions<T> extends TypeOptions<T> {}
 export class OneOfType<T> extends Type<T> {
   constructor(
     protected readonly oneOf: readonly T[],
-    protected override readonly options?: OneOfOptions<T>,
+    public override readonly options?: OneOfOptions<T>,
   ) {
     super();
   }
 
   /** @inheritdoc */
-  tryParse(unk: unknown): ParseResult<T> {
+  handle(unk: unknown, info: ParseInfo): Parse.Output<T> {
+    const { isSet } = info;
+
+    // must be set
+    if (!isSet) return Parse.fail(Failure.isNotSet);
+
     const isSome = this.oneOf.some(one => one === unk);
-    if (isSome) return new ParseSuccess(unk as T);
-    return new ParseFail(`is not one of "${this.oneOf.join('", "')}"`);
+    if (isSome) return Parse.success(unk as T);
+    return Parse.fail(`Must be onw of "${this.oneOf.join('", "')}"`);
   }
 }
 

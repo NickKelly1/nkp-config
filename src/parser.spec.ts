@@ -1,6 +1,6 @@
 import { key } from './key';
 import { literal } from './literal';
-import { parse } from './parse';
+import { parse } from './parser';
 
 describe('parse', () => {
   it('parses objects successfully', () => {

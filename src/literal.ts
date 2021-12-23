@@ -1,51 +1,30 @@
 import { TypeOptions, Type } from './circular-dependencies';
-import { ParseResult, ParseSuccess } from './ts';
-
-export enum LiteralBehavior {
-  HandleAll = 'HandleAll', // default
-  HandleSetOnly = 'HandleSetOnly',
-  HandleUnsetOnly = 'HandleUnsetOnly',
-}
+import { Parse } from './parse';
+import { ParseInfo } from './ts';
 
 export interface LiteralOptions<T> extends TypeOptions<T> {
-  behavior: LiteralBehavior;
+  //
 }
 
 /**
- * Represents a default string if the value was not defined
+ * Represents a default string if the value was not set
  */
 export class LiteralType<T> extends Type<T> {
   constructor(
     protected readonly value: T,
-    protected override readonly options?: LiteralOptions<T>,
+    public override readonly options?: LiteralOptions<T>,
   ) {
     super();
   }
 
-  public override get handlesSet(): boolean {
-    switch (this.options?.behavior) {
-    case LiteralBehavior.HandleAll: return true;
-    case LiteralBehavior.HandleSetOnly: return true;
-    case LiteralBehavior.HandleUnsetOnly: return false;
-    case undefined: return true;
-    default: return true;
-    }
-  }
-
-  public override get handlesUnset(): boolean {
-    switch (this.options?.behavior) {
-    case LiteralBehavior.HandleAll: return true;
-    case LiteralBehavior.HandleSetOnly: return false;
-    case LiteralBehavior.HandleUnsetOnly: return true;
-    case undefined: return true;
-    default: return false;
-    }
-  }
-
   /** @inheritdoc */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  tryParse(unk: unknown): ParseResult<T> {
-    return new ParseSuccess(this.value);
+  handle(unk: unknown, info: ParseInfo): Parse.Output<T> {
+    const { isSet } = info
+
+    if (isSet) return Parse.fail('Cannot provide literal when a value is already set.');
+
+    return Parse.success(this.value);
   }
 }
 

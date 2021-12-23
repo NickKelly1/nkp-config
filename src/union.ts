@@ -1,73 +1,33 @@
-import { ParseResult, ParseFail, ParseValueOptions } from './ts';
+import { Failure } from './failure';
+import { Parse } from './parse';
+import { ParseInfo } from './ts';
 import { Type } from './type';
-import { getIsSet } from './utils';
 
 /**
  * Type t or type u
  */
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class UnionType<TA extends Type, TB extends Type> extends Type<TA['_v'] | TB['_v']> {
+export class UnionType<T, U> extends Type<T | U> {
   constructor(
-    public readonly ta: TA,
-    public readonly tb: TB,
+    public readonly tt: Type<T>,
+    public readonly tu: Type<U>,
   ) {
     super();
   }
 
-  override get handlesUnset(): boolean {
-    return this.ta.handlesUnset || this.tb.handlesUnset;
-  }
+  /** @inheritdoc */
+  handle(unk: unknown, info: ParseInfo): Parse.Output<T | U> {
+    const tResult = this.tt.tryParse(unk, info);
+    if (Parse.isSuccess(tResult)) return tResult;
 
-  override get handlesSet(): boolean {
-    return this.ta.handlesSet || this.tb.handlesSet;
-  }
+    const UReason = this.tu.tryParse(unk, info);
+    if (Parse.isSuccess(UReason)) return UReason;
 
-  /**
-   * Try to parse
-   *
-   * @param unk
-   * @param options
-   * @returns
-   */
-  tryParse(unk: unknown, options?: ParseValueOptions): ParseResult<TA['_v'] | TB['_v']> {
-    const isSet = getIsSet(options);
-
-    let parseAReason: undefined | string;
-    if ((isSet && this.ta.handlesSet) || (!isSet && this.ta.handlesUnset)) {
-      const parse = this.ta.tryParse(unk);
-      if (parse.isSuccessful) return parse;
-      parseAReason = parse.reason;
-    }
-
-    let parseBReason: undefined | string;
-    if ((isSet && this.tb.handlesSet) || (!isSet && this.tb.handlesUnset)) {
-      const parse = this.tb.tryParse(unk);
-      if (parse.isSuccessful) return parse;
-      parseBReason = parse.reason;
-    }
-
-    if (parseAReason !== undefined && parseBReason !== undefined) {
-      // both parsed
-      return new ParseFail(`${parseAReason} and ${parseBReason}`);
-    }
-
-    if (parseAReason !== undefined) {
-      // only A parsed
-      return new ParseFail(parseAReason);
-    }
-
-    if (parseBReason !== undefined) {
-      // only B parsed
-      return new ParseFail(parseBReason);
-    }
-
-    if (isSet) {
-      // neither parsed and is set
-      return new ParseFail('value is set');
-    }
-
-    // not set
-    return new ParseFail('value is not set');
+    const tReason = tResult.value;
+    const bReason = UReason.value;
+    const reasons = Failure.any();
+    Failure.add(reasons, tReason);
+    Failure.add(reasons, bReason);
+    return Parse.fail(reasons);
   }
 }

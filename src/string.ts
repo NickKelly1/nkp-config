@@ -1,35 +1,101 @@
 import { TypeOptions, Type } from './circular-dependencies';
-import { ParseResult, ParseSuccess, ParseFail } from './ts';
+import { Parse } from './parse';
+import { Failure } from './failure';
+import { ParseInfo } from './ts';
 
-export interface StringOptions extends TypeOptions<string> {}
+export interface StringOptions extends TypeOptions<string> {
+  lt?: number;
+  lte?: number;
+  gt?: number;
+  gte?: number;
+  length?: number;
+}
+
 
 /**
  * Represents a parseable string
  */
 export class StringType extends Type<string> {
-  constructor(protected override readonly options?: StringOptions) {
+  constructor(public override readonly options?: StringOptions) {
     super();
   }
 
+
   /** @inheritdoc */
-  tryParse(unk: unknown): ParseResult<string> {
+  handle(unk: unknown, info: ParseInfo): Parse.Output<string> {
+    const { isSet } = info;
+
+    // must be set
+    if (!isSet) return Parse.fail(Failure.isNotSet);
+
     switch (typeof unk) {
-    case 'string': return new ParseSuccess(unk);
+    // is string
+    case 'string': return Parse.success(unk);
     case 'number':
     case 'boolean':
     case 'bigint':
-      return new ParseSuccess(String(unk));
+      // stringify
+      return Parse.success(String(unk));
+
+    // can't nicely stringify
     default:
-      return new ParseFail('is not string-like');
+      return Parse.fail('is not string-like');
     }
   }
+
+
+  /**
+   * Parse the bounds
+   *
+   * @param int       parsed string value
+   * @returns         bound validation result
+   */
+  protected _validateLength(string: string): Parse.Output<string> {
+    const {
+      length,
+      gt,
+      gte,
+      lt,
+      lte,
+    } = this.options ?? {};
+
+    const failures = Failure.all();
+
+    // TODO: test
+    if (length != null && !(string.length === length)) {
+      Failure.add(failures, Failure.create(`must be a string of length ${length}`));
+    }
+
+    if (gt != null && !(string.length > gt)) {
+      Failure.add(failures, Failure.create(`must be a string of length gt ${gt}`));
+    }
+
+    if (gte != null && !(string.length >= gte)) {
+      Failure.add(failures, Failure.create(`must be a string of length gte ${gte}`));
+    }
+
+    if (lt != null && !(string.length < lt)) {
+      Failure.add(failures, Failure.create(`must be a string of length lt ${lt}`));
+    }
+
+    if (lte != null && !(string.length <= lte)) {
+      Failure.add(failures, Failure.create(`must be a string of length lte ${lte}`));
+    }
+
+    if (Failure.empty(failures)) {
+      return Parse.fail(failures);
+    }
+
+    return Parse.success(string);
+  }
+
 }
 
 /**
  * Parse as a string
  *
- * @param key
- * @param otherwise
+ * @param key               key to extract
+ * @param options           string parsing options
  * @returns
  */
 export function string(options?: StringOptions): StringType {

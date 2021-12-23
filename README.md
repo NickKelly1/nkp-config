@@ -4,14 +4,14 @@
 [![Node.js Package](https://github.com/NickKelly1/nkp-config/actions/workflows/release.yml/badge.svg)](https://github.com/NickKelly1/nkp-config/actions/workflows/release.yml)
 ![Known Vulnerabilities](https://snyk.io/test/github/nickkelly1/nkp-config/badge.svg)
 
-Set of functions to help parse environment variables and bootstrap configuration objects.
+Zero dependency utility for parsing environment variables and bootstrapping configuration objects.
 
 ## Examples
 
 ### Parsing objects
 
 ```ts
-import * as c from '@nkp/config';
+import { parse, boolean, string, integer, key, oneOf } from '@nkp/config';
 
 /**
  * the parse function correctly sets the type of `config`
@@ -23,23 +23,22 @@ import * as c from '@nkp/config';
  *  env: 'development' | 'testing' | 'production';
  * }
  */
-const config = c.parse({
+const config = parse({
   // coerces DEBUG is a boolean defaulting to false if not provided
-  DEBUG: c.boolean().default(false),
+  DEBUG: boolean().default(false),
 
   // coerces MAIL_HOST to string, or leaves undefined if it doesn't exist
-  MAIL_HOST: c.string().optional(),
+  MAIL_HOST: string().optional(),
 
   // coerces process.env.HOST to string
-  HOST: c.string() ,
+  HOST: string() ,
 
   // coerces process.env.PORT to string
   // if not provided, defaults to 3000
-  PORT: c.integer().default(3000),
+  PORT: integer().default(3000),
 
   // ensures procese.env.NODE_ENV is one of the given values
-  env: c
-    .key('NODE_ENV')
+  env: key('NODE_ENV')
     .oneOf(['development', 'testing', 'production',] as const),
 }, process.env);
 ```
@@ -49,7 +48,7 @@ const config = c.parse({
 Instead of parsing an object, a single key can be parsed.
 
 ```ts
-import { key } from '@nkp/config';
+import { key, string } from '@nkp/config';
 
 // by key - required
 const email1: string = key('EMAIL')

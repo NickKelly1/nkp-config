@@ -34,24 +34,23 @@
     "upgrade": "npm-check --update"
   },
   "devDependencies": {
-    "@jest/types": "^27.1.0",
+    "@jest/types": "^27.4.2",
     "@rollup/plugin-commonjs": "^20.0.0",
     "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.0.4",
-    "@types/jest": "^27.0.1",
+    "@rollup/plugin-node-resolve": "^13.1.1",
+    "@types/jest": "^27.0.3",
     "@types/rollup-plugin-peer-deps-external": "^2.2.1",
-    "@typescript-eslint/eslint-plugin": "^4.30.0",
-    "@typescript-eslint/parser": "^4.30.0",
+    "@typescript-eslint/eslint-plugin": "^4.33.0",
+    "@typescript-eslint/parser": "^4.33.0",
     "eslint": "^7.32.0",
-    "jest": "^27.1.0",
-    "npm-check": "^5.9.2",
+    "jest": "^27.4.5",
     "rimraf": "^3.0.2",
-    "rollup": "^2.56.3",
+    "rollup": "^2.61.1",
     "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript2": "^0.30.0",
-    "ts-jest": "^27.0.5",
-    "ts-node": "^10.2.1",
-    "typescript": "^4.4.2"
+    "ts-jest": "^27.1.2",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.4"
   }
 }
