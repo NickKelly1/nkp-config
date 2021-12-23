@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.0.15 - 2021-12-23
+
+### Updated
+
+- Improved error messages
+- Fixed a bug with error messages
+- Fixed a bug with parsing options
+
 ## 0.0.14 - 2021-12-23
 
 ### Updated

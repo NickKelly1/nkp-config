@@ -117,3 +117,13 @@ export function hasOwn(object: unknown, property: PropertyKey): boolean {
 export function indent(width: number): string {
   return ' '.repeat(width);
 }
+
+/**
+ * Is the value defined? (not null or undefined)
+ * 
+ * @param value     the value
+ * @returns         whether the value is defined
+ */
+export function isDefined<T>(value: T | null | undefined): value is T {
+  return value != null;
+}

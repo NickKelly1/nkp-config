@@ -30,12 +30,12 @@ export class StringType extends Type<string> {
 
     switch (typeof unk) {
     // is string
-    case 'string': return Parse.success(unk);
+    case 'string': return this._validateLength(unk);
     case 'number':
     case 'boolean':
     case 'bigint':
       // stringify
-      return Parse.success(String(unk));
+      return this._validateLength(String(unk));
 
     // can't nicely stringify
     default:
@@ -82,7 +82,7 @@ export class StringType extends Type<string> {
       Failure.add(failures, Failure.create(`Must be a string of length lte ${lte}.`));
     }
 
-    if (Failure.empty(failures)) {
+    if (!Failure.empty(failures)) {
       return Parse.fail(failures);
     }
 

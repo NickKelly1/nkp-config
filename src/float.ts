@@ -34,7 +34,8 @@ export class FloatType extends Type<number> {
         const reason = Failure.message('Must be a float', unk, unk);
         return Parse.fail(reason)
       };
-      return Parse.success(unk);
+
+      return this._validateBounds(unk);
     }
 
     // parse bigint
@@ -53,7 +54,7 @@ export class FloatType extends Type<number> {
         return Parse.fail(reason);
       }
 
-      return Parse.success(num);
+      return this._validateBounds(num);
     }
 
     // parse string
@@ -64,7 +65,8 @@ export class FloatType extends Type<number> {
         const reason = Failure.message('Must be a float', unk, num);
         return Parse.fail(reason);
       }
-      return Parse.success(num);
+
+      return this._validateBounds(num);
     }
 
     // other

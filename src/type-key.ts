@@ -45,7 +45,7 @@ export class TypeKey<T = any> {
    * @returns
    */
   public static toFailureReason(key: PropertyKey, valueReason: Parse.FailType): string {
-    return `${String(key)}: ${Failure.stringify(valueReason)}`;
+    return `"${String(key)}": ${Failure.stringify(valueReason)}`;
   }
 
   /**
@@ -127,7 +127,7 @@ export class TypeKey<T = any> {
     // fail
     if (Parse.isFail(output)) {
       // throw
-      const msg = 'Failed to parse object property'
+      const msg = 'Failed to parse property:'
         + ' ' + TypeKey.toFailureReason(this.key, output.value);
       throw new TypeError(msg);
     }
