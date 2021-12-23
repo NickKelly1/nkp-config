@@ -26,8 +26,8 @@ export class UnionType<T, U> extends Type<T | U> {
     const tReason = tResult.value;
     const bReason = UReason.value;
     const reasons = Failure.any();
-    Failure.add(reasons, tReason);
-    Failure.add(reasons, bReason);
+    reasons.value.push(tReason);
+    reasons.value.push(bReason);
     return Parse.fail(reasons);
   }
 }

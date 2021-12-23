@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.14 - 2021-12-23
+
+### Updated
+
+- Fixed a bug with error messages
+
 ## 0.0.13 - 2021-12-23
 
 ### Added

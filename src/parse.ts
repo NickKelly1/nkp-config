@@ -28,7 +28,9 @@ export namespace Parse {
    * @returns         result type representing the failure
    */
   export function fail<T>(reason: Tree.Node<Failure> | string): Parse.Output<T> {
-    if (typeof reason === 'string') return Result.fail(Failure.single(reason));
+    if (typeof reason === 'string') {
+      return Result.fail(Failure.single(Failure.create(reason)));
+    }
     return Result.fail(reason);
   }
 

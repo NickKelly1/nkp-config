@@ -17,10 +17,12 @@ export interface Failure {
   /**
    * Human friendly string of the reason
    */
-  toString(): string;
+  reason(): string;
 }
 
 export namespace Failure {
+  export const URI = 'failure';
+
   /**
    * Basic vanilla failure instance
    */
@@ -31,11 +33,11 @@ export namespace Failure {
     eq(that: Basic) {
       // in the baseic case, two failure reasons are
       // equivalent if their strings are equal
-      return that.toString() === this.toString();
+      return that.reason() === this.reason();
     }
 
     /** @inheritdoc */
-    toString(): string {
+    reason(): string {
       return this.string;
     }
   }
@@ -136,7 +138,7 @@ export namespace Failure {
      * @returns 
      */
     export function handleLeaf(leaf: Tree.Leaf<Failure>, indentation: number): string {
-      return indent(indentation) + leaf.value.toString();
+      return indent(indentation) + leaf.value.reason();
     }
 
     /**
@@ -163,7 +165,7 @@ export namespace Failure {
         case 0: return '';
         case 1: return handleNode(ands.value[0]!, indentation);
         default: return indent(indentation)
-          + 'and:'
+          + 'must fulfill all of:'
           + '\n' + ands
             .value
             .map(subnode => handleNode(subnode, indentation + 2))
@@ -183,7 +185,7 @@ export namespace Failure {
         case 0: return '';
         case 1: return handleNode(ors.value[0]!, indentation);
         default: return indent(indentation)
-          + 'or:'
+          + 'must fulfill at-least one of:'
           + '\n' + ors
             .value
             .map(subnode => handleNode(subnode, indentation + 2))

@@ -102,7 +102,7 @@ export function parse<T extends Shape>(
       + parseErrors
         // give each line initial indentation
         .map(([key, fail], i) => `  ${i + 1}. ${TypeKey
-          .toReason(key, fail)
+          .toFailureReason(key, fail)
           .split('\n')
           .map(line => '  ' + line)}`)
         .join('\n');

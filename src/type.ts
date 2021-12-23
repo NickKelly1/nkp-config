@@ -86,7 +86,9 @@ export abstract class Type<T = any> {
       // fail
     if (Parse.isFail(output)) {
       // throw
-      throw new TypeError(`Failed to parse type: ${Failure.stringify(output.value)}`);
+      const msg = 'Failed to parse value: '
+        + ' ' + Failure.stringify(output.value);
+      throw new TypeError(`Failed to parse type: `);
     }
 
     // success

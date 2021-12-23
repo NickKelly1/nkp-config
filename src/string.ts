@@ -39,7 +39,7 @@ export class StringType extends Type<string> {
 
     // can't nicely stringify
     default:
-      return Parse.fail('is not string-like');
+      return Parse.fail('Must be string-like.');
     }
   }
 
@@ -63,23 +63,23 @@ export class StringType extends Type<string> {
 
     // TODO: test
     if (length != null && !(string.length === length)) {
-      Failure.add(failures, Failure.create(`must be a string of length ${length}`));
+      Failure.add(failures, Failure.create(`Must be a string of length ${length}.`));
     }
 
     if (gt != null && !(string.length > gt)) {
-      Failure.add(failures, Failure.create(`must be a string of length gt ${gt}`));
+      Failure.add(failures, Failure.create(`Must be a string of length gt ${gt}.`));
     }
 
     if (gte != null && !(string.length >= gte)) {
-      Failure.add(failures, Failure.create(`must be a string of length gte ${gte}`));
+      Failure.add(failures, Failure.create(`Must be a string of length gte ${gte}.`));
     }
 
     if (lt != null && !(string.length < lt)) {
-      Failure.add(failures, Failure.create(`must be a string of length lt ${lt}`));
+      Failure.add(failures, Failure.create(`Must be a string of length lt ${lt}.`));
     }
 
     if (lte != null && !(string.length <= lte)) {
-      Failure.add(failures, Failure.create(`must be a string of length lte ${lte}`));
+      Failure.add(failures, Failure.create(`Must be a string of length lte ${lte}.`));
     }
 
     if (Failure.empty(failures)) {
