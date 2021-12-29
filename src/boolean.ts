@@ -1,5 +1,4 @@
 import { TypeOptions, Type } from './circular-dependencies';
-import { Failure } from './failure';
 import { Parse } from './parse';
 import { ParseInfo } from './ts';
 
@@ -15,32 +14,32 @@ export class BooleanType extends Type<boolean> {
 
   /** @inheritdoc */
   handle(unk: unknown, info: ParseInfo): Parse.Output<boolean> {
-    const { isSet } = info;
+    const { isSet, } = info;
 
     // must be set
-    if (!isSet) return Parse.fail(Failure.isNotSet);
+    if (!isSet) return Parse.Fail.isNotSet;
 
     switch (typeof unk) {
-    case 'boolean': return Parse.success(unk);
-    case 'string': {
-      const lc = unk.toLowerCase().trim();
-      if (lc === 'true') return Parse.success(true);
-      if (lc === 'false') return Parse.success(false);
-      if (lc === '1') return Parse.success(true);
-      if (lc === '0') return Parse.success(false);
-      return Parse.fail('Must be a boolean.');
-    }
-    case 'number': {
-      if (unk === 0) return Parse.success(false);
-      if (unk === 1) return Parse.success(true);
-      return Parse.fail('Must be a boolean.');
-    }
-    case 'bigint': {
-      if (unk === BigInt(0)) return Parse.success(false);
-      if (unk === BigInt(1)) return Parse.success(true);
-      return Parse.fail('Must be a boolean.');
-    }
-    default: return Parse.fail('Must be a boolean.');
+      case 'boolean': return Parse.success(unk);
+      case 'string': {
+        const lc = unk.toLowerCase().trim();
+        if (lc === 'true') return Parse.success(true);
+        if (lc === 'false') return Parse.success(false);
+        if (lc === '1') return Parse.success(true);
+        if (lc === '0') return Parse.success(false);
+        return Parse.fail('Must be a boolean.');
+      }
+      case 'number': {
+        if (unk === 0) return Parse.success(false);
+        if (unk === 1) return Parse.success(true);
+        return Parse.fail('Must be a boolean.');
+      }
+      case 'bigint': {
+        if (unk === BigInt(0)) return Parse.success(false);
+        if (unk === BigInt(1)) return Parse.success(true);
+        return Parse.fail('Must be a boolean.');
+      }
+      default: return Parse.fail('Must be a boolean.');
     }
   }
 }

@@ -1,5 +1,4 @@
 import { TypeOptions, Type } from './circular-dependencies';
-import { Failure } from './failure';
 import { Parse } from './parse';
 import { ParseInfo } from './ts';
 
@@ -18,10 +17,10 @@ export class OneOfType<T> extends Type<T> {
 
   /** @inheritdoc */
   handle(unk: unknown, info: ParseInfo): Parse.Output<T> {
-    const { isSet } = info;
+    const { isSet, } = info;
 
     // must be set
-    if (!isSet) return Parse.fail(Failure.isNotSet);
+    if (!isSet) return Parse.Fail.isNotSet;
 
     const isSome = this.oneOf.some(one => one === unk);
     if (isSome) return Parse.success(unk as T);

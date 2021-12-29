@@ -7,9 +7,9 @@ const noobj = Object.create(null);
 
 /**
  * Default "from" object
- * 
+ *
  * Tries to use process.env, otherwise just uses empty object
- * 
+ *
  * @returns
  */
 export function defaultFromable(): Fromable {
@@ -28,9 +28,9 @@ export function defaultFromable(): Fromable {
 
 /**
  * Normalise a raw Fromable object
- * 
+ *
  * Takes raw consumer input and returns a parseable type
- * 
+ *
  * @param arg     raw inputted "from" object
  * @returns       safely parseable from object
  */
@@ -48,7 +48,7 @@ const defaultIsSetOptions: Required<IsSetOptions> = {
 
 /**
  * Is the target property of a host object set?
- * 
+ *
  * @param host        host object
  * @param target      target property
  */
@@ -85,8 +85,8 @@ export function isPropertySet(
 /**
  * Get "isSet" from the ParseValueOptions
  *
- * @param options 
- * @returns 
+ * @param options
+ * @returns
  */
 export function getIsSet(options?: ParseInfo): boolean {
   return !(options?.isSet === false);
@@ -110,7 +110,7 @@ export function hasOwn(object: unknown, property: PropertyKey): boolean {
 
 /**
  * Indent by `width` spaces
- * 
+ *
  * @param width     number of spaces to indent by
  * @returns         string of spaces
  */
@@ -120,7 +120,7 @@ export function indent(width: number): string {
 
 /**
  * Is the value defined? (not null or undefined)
- * 
+ *
  * @param value     the value
  * @returns         whether the value is defined
  */

@@ -16,7 +16,6 @@ import {
 } from './circular-dependencies';
 import { Typeable } from './constants';
 import { Parse } from './parse';
-import { Failure } from './failure';
 import { IsSetOptions, ParseInfo } from './ts';
 
 export interface TypeOptions<T> extends IsSetOptions {
@@ -83,12 +82,11 @@ export abstract class Type<T = any> {
 
     const output = this.handle(from, _info);
 
-      // fail
+    // fail
     if (Parse.isFail(output)) {
       // throw
-      const msg = 'Failed to parse value: '
-        + ' ' + Failure.stringify(output.value);
-      throw new TypeError(`Failed to parse type: `);
+      const msg = `Invalid value: ${Parse.Fail.stringify(output.value)}`;
+      throw new TypeError(msg);
     }
 
     // success

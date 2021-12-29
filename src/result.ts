@@ -3,7 +3,9 @@
  *
  * Represents successful or failed operations
  */
-export type Result<T, F> = Result.Success<T> | Result.Fail<F>;
+export type Result<T, F> =
+  | Result.Success<T>
+  | Result.Fail<F>;
 
 export namespace Result {
   /**
@@ -35,7 +37,7 @@ export namespace Result {
 
   /**
    * Is the output a "success" result
-   * 
+   *
    * @param output    result output
    * @returns         whether the output is a "success" result
    */
@@ -45,7 +47,7 @@ export namespace Result {
 
   /**
    * Is the output a "fail" result
-   * 
+   *
    * @param output    result output
    * @returns         whether the output is a "fail" result
    */
@@ -55,7 +57,7 @@ export namespace Result {
 
   /**
    * Create a "success" result
-   * 
+   *
    * @param value     success value
    * @returns         success result
    */
@@ -63,12 +65,12 @@ export namespace Result {
     return {
       type: Type.Success,
       value,
-    }
+    };
   }
 
   /**
    * Create a "fail" result
-   * 
+   *
    * @param value   fail value
    * @returns       fail result
    */
@@ -76,6 +78,6 @@ export namespace Result {
     return {
       type: Type.Fail,
       value,
-    }
+    };
   }
 }

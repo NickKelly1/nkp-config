@@ -20,7 +20,7 @@ export class LiteralType<T> extends Type<T> {
   /** @inheritdoc */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   handle(unk: unknown, info: ParseInfo): Parse.Output<T> {
-    const { isSet } = info
+    const { isSet, } = info;
 
     if (isSet) return Parse.fail('Cannot provide literal when a value is already set.');
 

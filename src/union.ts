@@ -1,4 +1,3 @@
-import { Failure } from './failure';
 import { Parse } from './parse';
 import { ParseInfo } from './ts';
 import { Type } from './type';
@@ -23,11 +22,11 @@ export class UnionType<T, U> extends Type<T | U> {
     const UReason = this.tu.tryParse(unk, info);
     if (Parse.isSuccess(UReason)) return UReason;
 
-    const tReason = tResult.value;
-    const bReason = UReason.value;
-    const reasons = Failure.any();
-    reasons.value.push(tReason);
-    reasons.value.push(bReason);
+    const tReason: Parse.Fail = tResult.value;
+    const bReason: Parse.Fail = UReason.value;
+    const reasons = Parse.Fail.any();
+    Parse.Fail.add(reasons, tReason);
+    Parse.Fail.add(reasons, bReason);
     return Parse.fail(reasons);
   }
 }

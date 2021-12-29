@@ -1,11 +1,11 @@
 import { Parse } from './parse';
-import { Fromable, ParserOptions } from './ts';
+import { Fromable } from './ts';
 import { Type } from './type';
 import { TypeKey } from './type-key';
 import {
   defaultFromable,
   isPropertySet,
-  normaliseFromable,
+  normaliseFromable
 } from './utils';
 
 export type Shape = { readonly [K: PropertyKey]: Type | TypeKey; }
@@ -29,16 +29,16 @@ export function parse<T extends Shape>(
    * then the consumer would be type hinted with `Output<{ val1: Type<string>, ... }>` when
    * hovering the output, instead of `{ val1: string, ... }`
    */
-  [K in keyof T]: T[K] extends TypeKey
-    ? T[K]['type']['_v']
-    : T[K] extends Type
-      ? T[K]['_v']
-      : T[K];
-} {
+    [K in keyof T]: T[K] extends TypeKey
+      ? T[K]['type']['_v']
+      : T[K] extends Type
+        ? T[K]['_v']
+        : T[K];
+  } {
   const _from = normaliseFromable(from);
   const parsed = {} as Record<PropertyKey, unknown>;
 
-  const parseErrors: [PropertyKey, Parse.FailType][] = [];
+  const parseErrors: [PropertyKey, Parse.Fail][] = [];
   const criticalErrors: string[] = [];
 
   // only seek properties on the "own" object itself, not prototypes
@@ -62,7 +62,7 @@ export function parse<T extends Shape>(
       }
 
       // failed to parse
-      parseErrors.push([key, result.value]);
+      parseErrors.push([key, result.value,]);
       continue;
     }
 
@@ -78,7 +78,7 @@ export function parse<T extends Shape>(
         continue;
       }
       // failed to parse
-      parseErrors.push([key, result.value]);
+      parseErrors.push([key, result.value,]);
       continue;
     }
 
@@ -92,16 +92,16 @@ export function parse<T extends Shape>(
     const msg = `Bad input:\n${criticalErrors
       .map((e, i) => `\t${i + 1}. ${e}`)
       .join('\n')}`;
-    throw new TypeError();
+    throw new TypeError(msg);
   }
 
   // any parsing errors?
   if (parseErrors.length) {
-    const msg = 'Failed to parse object:'
+    const msg = 'Invalid object:'
       + '\n'
       + parseErrors
         // give each line initial indentation
-        .map(([key, fail], i) => `  ${i + 1}. ${TypeKey
+        .map(([key, fail,], i) => `  ${i + 1}. ${TypeKey
           .toFailureReason(key, fail)
           .split('\n')
           .map(line => '  ' + line)}`)

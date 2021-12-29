@@ -11,19 +11,18 @@ import {
   OneOfOptions,
   string,
   StringOptions,
-  Type,
+  Type
 } from './circular-dependencies';
 import { Typeable } from './constants';
-import { Failure } from './failure';
 import { Parse } from './parse';
 import {
   Fromable,
-  ParseInfo,
+  ParseInfo
 } from './ts';
 import {
   defaultFromable,
   isPropertySet,
-  normaliseFromable,
+  normaliseFromable
 } from './utils';
 
 /**
@@ -41,11 +40,11 @@ export class TypeKey<T = any> {
    * Create a readable reason that a parse failed
    *
    * @param key
-   * @param valueReason
+   * @param reasons
    * @returns
    */
-  public static toFailureReason(key: PropertyKey, valueReason: Parse.FailType): string {
-    return `"${String(key)}": ${Failure.stringify(valueReason)}`;
+  public static toFailureReason(key: PropertyKey, reasons: Parse.Fail): string {
+    return `"${String(key)}": ${Parse.Fail.stringify(reasons)}`;
   }
 
   /**
@@ -127,7 +126,7 @@ export class TypeKey<T = any> {
     // fail
     if (Parse.isFail(output)) {
       // throw
-      const msg = 'Failed to parse property:'
+      const msg = 'Invalid property value:'
         + ' ' + TypeKey.toFailureReason(this.key, output.value);
       throw new TypeError(msg);
     }
@@ -146,7 +145,7 @@ export class TypeKey<T = any> {
     const _from = normaliseFromable(from);
     const isSet = isPropertySet(_from, this.key);
     const value = _from[this.key];
-    const info: ParseInfo = { isSet, }
+    const info: ParseInfo = { isSet, };
     const output = this.type.tryParse(value, info);
     return output;
   }

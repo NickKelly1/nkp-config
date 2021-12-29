@@ -1,5 +1,4 @@
 import { TypeOptions, Type } from './circular-dependencies';
-import { Failure } from './failure';
 import { Parse } from './parse';
 import { ParseInfo } from './ts';
 
@@ -22,67 +21,67 @@ export class IntegerType extends Type<number> {
 
   /** @inheritdoc */
   handle(unk: unknown, info: ParseInfo): Parse.Output<number> {
-    const { isSet } = info;
+    const { isSet, } = info;
 
     // must be set
-    if (!isSet) return Parse.fail(Failure.isNotSet);
+    if (!isSet) return Parse.Fail.isNotSet;
 
     switch (typeof unk) {
     // parse string
-    case 'string': {
-      const int = Number(unk);
-      if (!Number.isFinite(int)) {
-        // must be a finite number
-        const reason = Failure.message('Must be an integer', unk, int);
-        return Parse.fail(reason);
+      case 'string': {
+        const int = Number(unk);
+        if (!Number.isFinite(int)) {
+          // must be a finite number
+          const reason = Parse.Fail.message('Must be an integer', unk, int);
+          return Parse.fail(reason);
+        }
+
+        if (Math.floor(int) !== int) {
+          // not an integer
+          const reason = Parse.Fail.message('Must be an integer', unk, int);
+          return Parse.fail(reason);
+        }
+
+        // maybe success
+        return this._validateBounds(int);
       }
 
-      if (Math.floor(int) !== int) {
-        // not an integer
-        const reason = Failure.message('Must be an integer', unk, int);
-        return Parse.fail(reason);
+      // parse number
+      case 'number': {
+        if (unk !== Math.floor(unk)) {
+          const reason = Parse.Fail.message('Must be an integer', unk, unk);
+          return Parse.fail(reason);
+        }
+
+        // maybe success
+        return this._validateBounds(unk);
       }
 
-      // maybe success
-      return this._validateBounds(int);
-    }
+      // parse bigint
+      case 'bigint': {
+        const int = Number(unk);
 
-    // parse number
-    case 'number': {
-      if (unk !== Math.floor(unk)) {
-        const reason = Failure.message('Must be an integer', unk, unk);
-        return Parse.fail(reason);
+        if (!Number.isFinite(int)) {
+          // too large
+          const reason = Parse.Fail.message('Must be an integer', unk, int);
+          return Parse.fail(reason);
+        }
+
+        if (int !== Number(unk)) {
+          // too large
+          const reason = Parse.Fail.message('Must be an integer (is too large)', unk, int);
+          return Parse.fail(reason);
+        }
+
+        // maybe success
+        return this._validateBounds(int);
       }
 
-      // maybe success
-      return this._validateBounds(unk);
-    }
-
-    // parse bigint
-    case 'bigint': {
-      const int = Number(unk);
-
-      if (!Number.isFinite(int)) {
-        // too large
-        const reason = Failure.message('Must be an integer', unk, int);
+      // other
+      default: {
+        const reason = 'Must be an integer';
         return Parse.fail(reason);
       }
-
-      if (int !== Number(unk)) {
-        // too large
-        const reason = Failure.message('Must be an integer (is too large)', unk, int);
-        return Parse.fail(reason);
-      }
-
-      // maybe success
-      return this._validateBounds(int);
-    }
-
-    // other
-    default: {
-      const reason = 'Must be an integer';
-      return Parse.fail(reason);
-    }
     }
   }
 
@@ -102,30 +101,30 @@ export class IntegerType extends Type<number> {
       lte,
     } = this.options ?? {};
 
-    const reasons = Failure.all();
+    const reasons = Parse.Fail.all();
 
     // TODO: testing
     if (eq != null && !(int === eq)) {
-      Failure.add(reasons, Failure.create(`Must be an integer eq ${eq}.`));
+      Parse.Fail.add(reasons, `Must be an integer eq ${eq}.`);
     }
 
     if (gt != null && !(int > gt)) {
-      Failure.add(reasons, Failure.create(`Must be an integer gt ${gt}.`));
+      Parse.Fail.add(reasons, `Must be an integer gt ${gt}.`);
     }
 
     if (gte != null && !(int >= gte)) {
-      Failure.add(reasons, Failure.create(`Must be an integer gte ${gte}.`));
+      Parse.Fail.add(reasons, `Must be an integer gte ${gte}.`);
     }
 
     if (lt != null && !(int < lt)) {
-      Failure.add(reasons, Failure.create(`Must be an integer lt ${lt}.`));
+      Parse.Fail.add(reasons, `Must be an integer lt ${lt}.`);
     }
 
     if (lte != null && !(int <= lte)) {
-      Failure.add(reasons, Failure.create(`Must be an integer lte ${lte}.`));
+      Parse.Fail.add(reasons, `Must be an integer lte ${lte}.`);
     }
 
-    if (!Failure.empty(reasons)) {
+    if (!Parse.Fail.isEmpty(reasons)) {
       return Parse.fail(reasons);
     }
 

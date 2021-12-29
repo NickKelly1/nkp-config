@@ -10,41 +10,42 @@ const config = {
   overrides: [
     {
       files: ['*.js', '*.jsx',],
-      'rules': {
+      rules: {
+        'indent': ['error', 2, ],
         // doesn't work on .js files
         '@typescript-eslint/explicit-module-boundary-types': ['off',],
       },
     },
   ],
-  'env': {
+  env: {
     // chose which are appropriate
-    'browser': false,
-    'node': false,
+    browser: false,
+    node: false,
 
-    'es2021': true,
-    'jest': true,
+    es2021: true,
+    jest: true,
   },
-  'extends': [
+  extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/eslint-recommended',
     'eslint:recommended',
   ],
-  'parser': '@typescript-eslint/parser',
-  'parserOptions': {
-    'ecmaVersion': 2021,
-    'sourceType': ['module', 'commonjs',],
-    'ecmaFeatures': {
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaVersion: 2021,
+    sourceType: ['module', 'commonjs',],
+    ecmaFeatures: {
       jsx: true, // Allows for the parsing of JSX
     },
   },
-  'plugins': [
+  plugins: [
     '@typescript-eslint',
   ],
   rules: {
-    'indent': ['error', 2, ],
+    indent: ['off',],
     'linebreak-style': ['error', 'unix',],
-    'quotes': ['error', 'single',],
-    'semi': ['error', 'always',],
+    quotes: ['error', 'single',],
+    semi: ['error', 'always',],
     'comma-dangle': ['error', {
       'functions': 'only-multiline',
       'objects': 'always',
@@ -58,11 +59,13 @@ const config = {
     'no-undef': ['off',], // favour typescript
     'no-redeclare': ['off',], // favour typescript
     'no-trailing-spaces': ['error',],
-    'eqeqeq': ['error', 'smart',],
+    eqeqeq: ['error', 'smart',],
+    '@typescript-eslint/indent': ['error', 2, ],
     '@typescript-eslint/ban-ts-comment': ['off',],
     '@typescript-eslint/no-non-null-assertion': ['off',],
     '@typescript-eslint/no-this-alias': ['off',],
     '@typescript-eslint/no-explicit-any': ['off',],
+    '@typescript-eslint/no-namespace': ['off',],
     '@typescript-eslint/no-empty-interface': ['off',],
   },
 };

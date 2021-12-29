@@ -1,6 +1,5 @@
 import { TypeOptions, Type } from './circular-dependencies';
 import { Parse } from './parse';
-import { Failure } from './failure';
 import { ParseInfo } from './ts';
 
 export interface StringOptions extends TypeOptions<string> {
@@ -23,23 +22,23 @@ export class StringType extends Type<string> {
 
   /** @inheritdoc */
   handle(unk: unknown, info: ParseInfo): Parse.Output<string> {
-    const { isSet } = info;
+    const { isSet, } = info;
 
     // must be set
-    if (!isSet) return Parse.fail(Failure.isNotSet);
+    if (!isSet) return Parse.Fail.isNotSet;
 
     switch (typeof unk) {
-    // is string
-    case 'string': return this._validateLength(unk);
-    case 'number':
-    case 'boolean':
-    case 'bigint':
-      // stringify
-      return this._validateLength(String(unk));
+      // is string
+      case 'string': return this._validateLength(unk);
+      case 'number':
+      case 'boolean':
+      case 'bigint':
+        // stringify
+        return this._validateLength(String(unk));
 
-    // can't nicely stringify
-    default:
-      return Parse.fail('Must be string-like.');
+      default:
+        // can't nicely stringify
+        return Parse.fail('Must be string-like.');
     }
   }
 
@@ -59,30 +58,30 @@ export class StringType extends Type<string> {
       lte,
     } = this.options ?? {};
 
-    const failures = Failure.all();
+    const failures = Parse.Fail.all();
 
     // TODO: test
     if (length != null && !(string.length === length)) {
-      Failure.add(failures, Failure.create(`Must be a string of length ${length}.`));
+      Parse.Fail.add(failures, `Must be a string of length ${length}.`);
     }
 
     if (gt != null && !(string.length > gt)) {
-      Failure.add(failures, Failure.create(`Must be a string of length gt ${gt}.`));
+      Parse.Fail.add(failures, `Must be a string of length gt ${gt}.`);
     }
 
     if (gte != null && !(string.length >= gte)) {
-      Failure.add(failures, Failure.create(`Must be a string of length gte ${gte}.`));
+      Parse.Fail.add(failures, `Must be a string of length gte ${gte}.`);
     }
 
     if (lt != null && !(string.length < lt)) {
-      Failure.add(failures, Failure.create(`Must be a string of length lt ${lt}.`));
+      Parse.Fail.add(failures, `Must be a string of length lt ${lt}.`);
     }
 
     if (lte != null && !(string.length <= lte)) {
-      Failure.add(failures, Failure.create(`Must be a string of length lte ${lte}.`));
+      Parse.Fail.add(failures, `Must be a string of length lte ${lte}.`);
     }
 
-    if (!Failure.empty(failures)) {
+    if (!Parse.Fail.isEmpty(failures)) {
       return Parse.fail(failures);
     }
 

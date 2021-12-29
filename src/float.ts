@@ -1,6 +1,5 @@
 import { TypeOptions, Type } from './circular-dependencies';
 import { Parse } from './parse';
-import { Failure } from './failure';
 import { ParseInfo } from './ts';
 
 export interface FloatOptions extends TypeOptions<number> {
@@ -22,58 +21,58 @@ export class FloatType extends Type<number> {
 
   /** @inheritdoc */
   handle(unk: unknown, info: ParseInfo): Parse.Output<number> {
-    const { isSet } = info;
+    const { isSet, } = info;
 
     // must be set
-    if (!isSet) return Parse.fail(Failure.isNotSet);
+    if (!isSet) return Parse.Fail.isNotSet;
 
     switch (typeof unk) {
-    // parse number
-    case 'number': {
-      if (!Number.isFinite(unk)) {
-        const reason = Failure.message('Must be a float', unk, unk);
-        return Parse.fail(reason)
-      };
+      // parse number
+      case 'number': {
+        if (!Number.isFinite(unk)) {
+          const reason = Parse.Fail.message('Must be a float', unk, unk);
+          return Parse.fail(reason);
+        }
 
-      return this._validateBounds(unk);
-    }
-
-    // parse bigint
-    case 'bigint': {
-      const num = Number(unk);
-
-      if (!Number.isFinite(num)) {
-        // too big
-        const reason = Failure.message('Must be a float', unk, num);
-        return Parse.fail(reason);
+        return this._validateBounds(unk);
       }
 
-      if (!(num.toString() === unk.toString())) {
-        // didn't resolve properly
-        const reason = Failure.message('Must be a float (is too large)', unk, num);
-        return Parse.fail(reason);
+      // parse bigint
+      case 'bigint': {
+        const num = Number(unk);
+
+        if (!Number.isFinite(num)) {
+          // too big
+          const reason = Parse.Fail.message('Must be a float', unk, num);
+          return Parse.fail(reason);
+        }
+
+        if (!(num.toString() === unk.toString())) {
+          // didn't resolve properly
+          const reason = Parse.Fail.message('Must be a float (is too large)', unk, num);
+          return Parse.fail(reason);
+        }
+
+        return this._validateBounds(num);
       }
 
-      return this._validateBounds(num);
-    }
-
-    // parse string
-    case 'string': {
-      const num = Number(unk);
-      if (!Number.isFinite(num)) {
+      // parse string
+      case 'string': {
+        const num = Number(unk);
+        if (!Number.isFinite(num)) {
         // not finite
-        const reason = Failure.message('Must be a float', unk, num);
-        return Parse.fail(reason);
+          const reason = Parse.Fail.message('Must be a float', unk, num);
+          return Parse.fail(reason);
+        }
+
+        return this._validateBounds(num);
       }
 
-      return this._validateBounds(num);
-    }
-
-    // other
-    default: {
-      const reason = 'Must be a float';
-      return Parse.fail(reason);
-    }
+      // other
+      default: {
+        const reason = 'Must be a float';
+        return Parse.fail(reason);
+      }
     }
   }
 
@@ -93,30 +92,30 @@ export class FloatType extends Type<number> {
       lte,
     } = this.options ?? {};
 
-    const reasons = Failure.all();
+    const reasons = Parse.Fail.all();
 
     // TODO: testing
     if (eq != null && !(float === eq)) {
-      Failure.add(reasons, Failure.create(`Must be a float eq ${eq}.`));
+      Parse.Fail.add(reasons, `Must be a float eq ${eq}.`);
     }
 
     if (gt != null && !(float > gt)) {
-      Failure.add(reasons, Failure.create(`Must be a float gt ${gt}.`));
+      Parse.Fail.add(reasons, `Must be a float gt ${gt}.`);
     }
 
     if (gte != null && !(float >= gte)) {
-      Failure.add(reasons, Failure.create(`Must be a float gte ${gte}.`));
+      Parse.Fail.add(reasons, `Must be a float gte ${gte}.`);
     }
 
     if (lt != null && !(float < lt)) {
-      Failure.add(reasons, Failure.create(`Must be a float lt ${lt}.`));
+      Parse.Fail.add(reasons, `Must be a float lt ${lt}.`);
     }
 
     if (lte != null && !(float <= lte)) {
-      Failure.add(reasons, Failure.create(`Must be a float lte ${lte}.`));
+      Parse.Fail.add(reasons, `Must be a float lte ${lte}.`);
     }
 
-    if (!Failure.empty(reasons)) {
+    if (!Parse.Fail.isEmpty(reasons)) {
       return Parse.fail(reasons);
     }
 
