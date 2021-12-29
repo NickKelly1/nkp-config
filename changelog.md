@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.16 - 2021-12-28
+
+### Updated
+
+- Changed license to MIT
+
 ## 0.0.15 - 2021-12-23
 
 ### Updated
