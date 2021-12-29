@@ -8,7 +8,7 @@
   "author": "Nick Kelly",
   "homepage": "https://github.com/NickKelly1/nkp-config",
   "readme": "https://github.com/NickKelly1/nkp-config#readme",
-  "license": "Mozilla Public License Version 2.0",
+  "license": "MIT",
   "private": false,
   "repository": {
     "type": "git",
