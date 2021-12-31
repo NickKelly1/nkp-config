@@ -6,7 +6,46 @@
 
 Zero dependency utility for parsing environment variables and bootstrapping configuration objects.
 
-## Examples
+## Table of contents
+
+- [Installation](#installation)
+  - [npm](#npm)
+  - [yarn](#yarn)
+  - [pnpm](#pnpm)
+  - [Exports](#exports)
+- [Usage](#usage)
+  - [Parsing objects](#parsing-objects)
+  - [Parsing values](#parsing-values)
+  - [Default values](#default-values)
+  - [Throws on missing values](#throws-on-missing-values)
+- [Updating Dependencies](#updating-dependencies)
+- [Publishing](#publishing)
+
+## Installation
+
+### npm
+
+```sh
+npm install @nkp/config
+```
+
+### Yarn
+
+```sh
+yarn add @nkp/config
+```
+
+### pnpm
+
+```sh
+pnpm add @nkp/config
+```
+
+### Exports
+
+`@nkp/config` targets CommonJS and ES modules. To utilise ES modules consider using a bundler like `webpack` or `rollup`.
+
+## Usage
 
 ### Parsing objects
 
@@ -86,6 +125,30 @@ import { key, string } from '@nkp/config';
 const vars = {};
 const value = key('MISSING_VALUE').string().parse(vars);
 // throws TypeError "MISSING_VALUE is not defined"
+```
+
+## Updating dependencies
+
+To update dependencies run one of
+
+```sh
+# if npm
+# update package.json
+npx npm-check-updates -u
+# install
+npm install
+
+# if yarn
+# update package.json
+yarn create npm-check-updates -u
+# install
+yarn
+
+# if pnpm
+# update package.json
+pnpx npm-check-updates -u
+# install
+pnpm install
 ```
 
 ## Publishing
