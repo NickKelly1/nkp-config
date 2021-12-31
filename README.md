@@ -1,8 +1,8 @@
-# nkp-config
+# @nkp/config
 
 [![npm version](https://badge.fury.io/js/%40nkp%2Fconfig.svg)](https://www.npmjs.com/package/@nkp/config)
-[![Node.js Package](https://github.com/NickKelly1/nkp-config/actions/workflows/release.yml/badge.svg)](https://github.com/NickKelly1/nkp-config/actions/workflows/release.yml)
-![Known Vulnerabilities](https://snyk.io/test/github/nickkelly1/nkp-config/badge.svg)
+[![deploy status](https://github.com/NickKelly1/nkp-config/actions/workflows/release.yml/badge.svg)](https://github.com/NickKelly1/nkp-config/actions/workflows/release.yml)
+[![known vulnerabilities](https://snyk.io/test/github/nickkelly1/nkp-config/badge.svg)](https://snyk.io/test/github/nickkelly1/nkp-config)
 
 Zero dependency utility for parsing environment variables and bootstrapping configuration objects.
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.0.17 - 2021-12-31
+
+### Updated
+
+- Dependencies
+- Moved from `npm` to `pnpm`
+- Updated readme.md
+
 ## 0.0.16 - 2021-12-28
 
 ### Updated
