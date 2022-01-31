@@ -5,6 +5,7 @@
     "module": "ESNext",
     "noEmit": false,
     "declaration": true,
-    "emitDeclarationOnly": true
+    "emitDeclarationOnly": true,
+    "removeComments": false,
   }
 }
