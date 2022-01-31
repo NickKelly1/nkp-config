@@ -1,31 +1,21 @@
 {
   "extends": "../tsconfig.json",
-  "exclude": [
-    "../*.spec.ts",
-    "../*.test.ts",
-
-    "../**/*.spec.ts",
-    "../**/*.test.ts",
-
-    "../*.spec.util.ts",
-    "../*.test.util.ts",
-    "../**/*.spec.util.ts",
-    "../**/*.test.util.ts",
-
-    "../*.util.spec.ts",
-    "../*.util.test.ts",
-    "../**/*.util.spec.ts",
-    "../**/*.util.test.ts",
-
-    "../__tests__",
-    "../dist/*",
-  ],
   "include": [
-    "../src/*",
     "../src/**/*",
   ],
+  "exclude": [
+    "../**/*.spec.ts",
+    "../**/*.test.ts",
+    "../**/*.spec.util.ts",
+    "../**/*.test.util.ts",
+    "../tests",
+  ],
   "compilerOptions": {
-    "outDir": "../dist",                              /* Redirect output structure to the directory. */
-    "rootDir": "../src",                             /* Specify the root directory of input files. Use to control the output directory structure with --outDir. */
+    "outDir": "../dist",
+    "rootDir": "../src",
+    "noEmit": true,
+    "sourceMap": false,
+    "declaration": false,
+    "declarationMap": false
   }
 }

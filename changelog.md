@@ -1,14 +1,22 @@
 # Changelog
 
+## 1.0.0 - 2021-12-31
+
+Major release
+
+### Changed
+
+- Devop: updated build, ci, tests, readme
+
 ## 0.0.18 - 2021-12-31
 
-### Updated
+### Changed
 
-- readme.md
+- Updated readme.md
 
 ## 0.0.17 - 2021-12-31
 
-### Updated
+### Changed
 
 - Dependencies
 - Moved from `npm` to `pnpm`
@@ -16,13 +24,13 @@
 
 ## 0.0.16 - 2021-12-28
 
-### Updated
+### Changed
 
 - Changed license to MIT
 
 ## 0.0.15 - 2021-12-23
 
-### Updated
+### Changed
 
 - Improved error messages
 - Fixed a bug with error messages
@@ -30,7 +38,7 @@
 
 ## 0.0.14 - 2021-12-23
 
-### Updated
+### Changed
 
 - Fixed a bug with error messages
 
@@ -40,7 +48,7 @@
 
 - Numeric and string parsing options
 
-### Updated
+### Changed
 
 - Improved type inference
 - Improved error messages
