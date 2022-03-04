@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.0 - 2022-03-04
+
+### Added
+
+- dependency: `@nkp/result`
+
+### Removed
+
+- `Result`
+
 ## 1.0.2 - 2022-01-30
 
 ### Changed

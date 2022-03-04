@@ -1,4 +1,4 @@
-import { Result } from './result';
+import { Result } from '@nkp/result';
 import { Logic } from './logic';
 import { indent } from './utils';
 
@@ -24,7 +24,7 @@ export namespace Parse {
   /**
    * Parsing failed on this point
    */
-  export const success = Result.success as (<T>(value: T) => Parse.Output<T>);
+  export const success = Result.ok as (<T>(value: T) => Parse.Output<T>);
 
   /**
    * Parsing failed on this point
@@ -32,11 +32,11 @@ export namespace Parse {
    * @param reason    reason parsing failed
    * @returns         result type representing the failure
    */
-  export function fail(reason: Failable): Result.Fail<Fail> {
+  export function fail(reason: Failable): Result.Err<Fail> {
     const f = typeof reason === 'string'
       ? Logic.Statement.value(reason)
       : reason;
-    return Result.fail(f);
+    return Result.err(f);
     // why isn't this working with tests?
     // return Result.fail(Parse.Fail.to(reason));
   }
@@ -44,18 +44,18 @@ export namespace Parse {
   /**
    * Did parsing succeed?
    */
-  export const isSuccess = Result.isSuccess as (<T>(output: Parse.Output<T>) => output is Result.Success<T>);
+  export const isSuccess = Result.isOk as (<T>(output: Parse.Output<T>) => output is Result.Ok<T>);
 
   /**
    * Did parsing fail?
    */
-  export const isFail = Result.isFail as (<T>(output: Parse.Output<T>) => output is Result.Fail<Fail>);
+  export const isFail = Result.isErr as (<T>(output: Parse.Output<T>) => output is Result.Err<Fail>);
 
   export namespace Fail {
     export type Reason = string;
 
     // failure reason: is not set
-    export const isNotSet: Result.Fail<Parse.Fail> = Parse.fail('Must be defined.');
+    export const isNotSet: Result.Err<Parse.Fail> = Parse.fail('Must be defined.');
 
 
     /**

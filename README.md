@@ -4,7 +4,7 @@
 [![deploy status](https://github.com/NickKelly1/nkp-config/actions/workflows/release.yml/badge.svg)](https://github.com/NickKelly1/nkp-config/actions/workflows/release.yml)
 [![known vulnerabilities](https://snyk.io/test/github/nickkelly1/nkp-config/badge.svg)](https://snyk.io/test/github/nickkelly1/nkp-config)
 
-Zero dependency utility for parsing environment variables and bootstrapping configuration objects.
+Utility for parsing environment variables and bootstrapping configuration objects.
 
 ## Table of contents
 
